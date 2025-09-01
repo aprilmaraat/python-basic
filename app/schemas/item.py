@@ -8,6 +8,10 @@ class ItemBase(BaseModel):
 class ItemCreate(ItemBase):
     pass
 
+class ItemUpdate(BaseModel):
+    title: str | None = None
+    description: str | None = None
+
 class Item(ItemBase):
     id: int
     owner_id: int
