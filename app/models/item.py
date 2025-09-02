@@ -9,5 +9,8 @@ class Item(Base):
     title = Column(String, index=True, nullable=False)
     description = Column(String, nullable=True)
     owner_id = Column(Integer, ForeignKey("users.id"))
+    # "expense" or "earning"
+    item_type = Column(String(20), nullable=False, index=True, default="expense")
+    
 
     owner = relationship("User", back_populates="items")

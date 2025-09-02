@@ -54,6 +54,9 @@ python -m uvicorn main:app --reload
 The app will be available at:
 👉 http://127.0.0.1:8000
 
+Swagger UI → http://127.0.0.1:8000/docs
+ReDoc → http://127.0.0.1:8000/redoc
+
 📂 Project Structure
 
 python-basic/
