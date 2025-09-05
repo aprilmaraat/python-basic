@@ -8,8 +8,18 @@ from app.crud import item as crud_item
 
 router = APIRouter()
 
-@router.post("/", response_model=Item)
+@router.post("/", response_model=Item, summary="Create a new item", description="Create a new expense or earning item for a user")
 def create_item(item: ItemCreate, db: Session = Depends(get_db)):
+    """
+    Create a new item.
+    
+    - **title**: Title of the item (required, 1-100 characters)
+    - **description**: Optional description (max 500 characters)
+    - **amount**: Amount as integer (required, >= 0, e.g., 1000 for $10.00)
+    - **date**: Date in YYYY-MM-DD format (optional, defaults to today)
+    - **item_type**: Either "expense" or "earning" (required)
+    - **owner_id**: ID of the user who owns this item (required)
+    """
     return crud_item.create_item(db, item)
 
 @router.get("/", response_model=List[Item])
