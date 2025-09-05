@@ -1,19 +1,43 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
+from datetime import date
 from app.db.session import get_db
 from app.schemas.item import Item, ItemCreate, ItemUpdate
 from app.crud import item as crud_item
 
 router = APIRouter()
 
-@router.post("/{owner_id}", response_model=Item)
-def create_item_for_user(owner_id: int, item: ItemCreate, db: Session = Depends(get_db)):
-    return crud_item.create_item(db, item, owner_id)
+@router.post("/", response_model=Item)
+def create_item(item: ItemCreate, db: Session = Depends(get_db)):
+    return crud_item.create_item(db, item)
 
 @router.get("/", response_model=List[Item])
 def read_items(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     return crud_item.get_items(db, skip=skip, limit=limit)
+
+# Search items with optional filters
+@router.get("/search", response_model=List[Item])
+def search_items(
+    owner_id: int | None = None,
+    q: str | None = None,
+    item_type: str | None = None,
+    date_from: date | None = None,
+    date_to: date | None = None,
+    skip: int = 0,
+    limit: int = 20,
+    db: Session = Depends(get_db),
+):
+    return crud_item.search_items(
+        db,
+        owner_id=owner_id,
+        q=q,
+        item_type=item_type,
+        date_from=date_from,
+        date_to=date_to,
+        skip=skip,
+        limit=limit,
+    )
 
 @router.get("/{item_id}", response_model=Item)
 def read_item(item_id: int, db: Session = Depends(get_db)):

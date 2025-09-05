@@ -2,9 +2,10 @@ from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from app.models.item import Item
 from app.schemas.item import ItemCreate, ItemUpdate
+from datetime import date
 
-def create_item(db: Session, item: ItemCreate, owner_id: int):
-    db_item = Item(**item.model_dump(), owner_id=owner_id)
+def create_item(db: Session, item: ItemCreate):
+    db_item = Item(**item.model_dump(exclude_none=True))
     db.add(db_item)
     db.commit()
     db.refresh(db_item)
@@ -19,6 +20,8 @@ def search_items(
     owner_id: int | None = None,
     q: str | None = None,
     item_type: str | None = None,
+    date_from: date | None = None,
+    date_to: date | None = None,
     skip: int = 0,
     limit: int = 20,
 ):
@@ -29,6 +32,12 @@ def search_items(
 
     if item_type is not None:
         query = query.filter(Item.item_type == item_type)
+
+    if date_from is not None:
+        query = query.filter(Item.date >= date_from)
+
+    if date_to is not None:
+        query = query.filter(Item.date <= date_to)
 
     if q:
         ilike = f"%{q}%"

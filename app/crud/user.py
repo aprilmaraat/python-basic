@@ -10,6 +10,7 @@ def create_user(db: Session, user: UserCreate):
     return db_user
 
 def get_users(db: Session, skip: int = 0, limit: int = 10):
+    print("WOWOWEEWO WAWAWAA")
     return db.query(User).offset(skip).limit(limit).all()
 
 def get_user(db: Session, user_id: int):
