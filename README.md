@@ -1,9 +1,6 @@
 FastAPI with SQLAlchemy (CRUD Example)
 
-This project is a simple CRUD API built with FastAPI
-, SQLAlchemy
-, and Pydantic
-. It provides endpoints for managing Users and Items, with an SQLite database for persistence.
+This project is a simple CRUD API built with FastAPI, SQLAlchemy, and Pydantic. It provides endpoints for managing Users and Items, with an SQLite database for persistence.
 
 🚀 Features
 
@@ -70,8 +67,12 @@ python-basic/
 │   ├── schemas/           # Pydantic models
 │   ├── crud/              # CRUD functions
 │   ├── db/
-│       ├── session.py     # DB session and engine
-│       ├── models.py      # SQLAlchemy models
+│   │   └── session.py     # DB session and engine
+│   ├── models/            # SQLAlchemy models
+│   │   ├── user.py
+│   │   └── item.py
+│   └── core/
+│       └── config.py      # Settings/configuration
 
 🛠️ Development Notes
 
@@ -80,3 +81,27 @@ The database is SQLite (fastapi.db).
 SQLAlchemy models and Pydantic schemas define structure and validation.
 
 You can extend this project by adding new routers, models, and schemas.
+
+🔁 Database schema auto-updates (SQLite)
+
+On startup, the app ensures the `items` table includes the following columns for backwards compatibility with older databases:
+
+- item_type (expense | earning, default: expense)
+- amount (integer, default: 0)
+- date (DATE, default: current date)
+
+If you are using an existing `fastapi.db`, these columns will be added automatically when the app starts. New databases are created with the full schema.
+
+🧭 Endpoints overview
+
+- Users: `/users`
+  - POST `/` create, GET `/` list, GET `/{user_id}`, PUT `/{user_id}`, DELETE `/{user_id}`
+
+- Items: `/items`
+  - POST `/` create, GET `/` list, GET `/{item_id}`, PUT `/{item_id}`, DELETE `/{item_id}`
+  - GET `/search` with optional filters: `owner_id`, `q` (matches title/description), `item_type` (expense|earning), `date_from`, `date_to`, `skip`, `limit`
+
+📖 Docs
+
+- Swagger UI → http://127.0.0.1:8000/docs
+- ReDoc → http://127.0.0.1:8000/redoc
