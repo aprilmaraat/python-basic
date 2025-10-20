@@ -45,12 +45,17 @@ class ItemUpdate(BaseModel):
     amount: int | None = Field(None, ge=0, description="Amount as an integer (e.g., 1000 for $10.00)")
     date: Optional[datetime_date] = Field(default=None, description="Date of the item (YYYY-MM-DD format)")
     item_type: Literal["expense", "earning"] | None = Field(None, description="Type of item: 'expense' or 'earning'")
+    owner_id: int | None = Field(None, description="ID of the user who owns this item")
 
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
                 "title": "Updated Grocery Shopping",
-                "amount": 12000
+                "amount": 12000,
+                "description": "Adjusted after returning an item",
+                "date": "2024-02-01",
+                "item_type": "expense",
+                "owner_id": 2
             }
         }
     )
