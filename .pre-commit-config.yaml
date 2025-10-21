@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: instruction-guard
+        name: Instruction Guard
+        entry: python scripts/check_instruction_updates.py
+        language: system
+        pass_filenames: false
+        stages: [commit]

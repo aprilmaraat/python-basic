@@ -1,17 +1,38 @@
-from pydantic import BaseModel
-from pydantic import ConfigDict
+from pydantic import BaseModel, EmailStr
+from typing import Optional, List
+from app.schemas.item import TransactionReadSimple
+
 
 class UserBase(BaseModel):
-    username: str
-    email: str
+	email: EmailStr
+	full_name: Optional[str] = None
+	is_active: bool = True
+
 
 class UserCreate(UserBase):
-    pass
+	pass
+
 
 class UserUpdate(BaseModel):
-    username: str | None = None
-    email: str | None = None
+	email: Optional[EmailStr] = None
+	full_name: Optional[str] = None
+	is_active: Optional[bool] = None
 
-class User(UserBase):
-    id: int
-    model_config = ConfigDict(from_attributes=True)
+
+class UserRead(BaseModel):
+	id: int
+	email: EmailStr
+	full_name: Optional[str] = None
+	is_active: bool
+	transactions: List[TransactionReadSimple] = []
+
+	model_config = {"from_attributes": True}
+
+
+class UserReadSimple(BaseModel):
+	id: int
+	email: EmailStr
+	full_name: Optional[str] = None
+	is_active: bool
+
+	model_config = {"from_attributes": True}

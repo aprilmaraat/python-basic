@@ -1,69 +1,83 @@
-from sqlalchemy.orm import Session
-from sqlalchemy import or_
-from app.models.item import Item
-from app.schemas.item import ItemCreate, ItemUpdate
+from typing import List, Optional
 from datetime import date
+from sqlalchemy.orm import Session
+from sqlalchemy import select, and_, or_, func
+from app.models.transaction import Transaction, TransactionType
+from app.schemas.item import TransactionCreate, TransactionUpdate
 
-def create_item(db: Session, item: ItemCreate):
-    db_item = Item(**item.model_dump(exclude_none=True))
-    db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
-    return db_item
 
-def get_items(db: Session, skip: int = 0, limit: int = 10):
-    return db.query(Item).offset(skip).limit(limit).all()
+def get(db: Session, transaction_id: int) -> Optional[Transaction]:
+	return db.get(Transaction, transaction_id)
 
-def search_items(
-    db: Session,
-    *,
-    owner_id: int | None = None,
-    q: str | None = None,
-    item_type: str | None = None,
-    date_from: date | None = None,
-    date_to: date | None = None,
-    skip: int = 0,
-    limit: int = 20,
-):
-    query = db.query(Item)
 
-    if owner_id is not None:
-        query = query.filter(Item.owner_id == owner_id)
+def get_multi(db: Session, skip: int = 0, limit: int = 100) -> List[Transaction]:
+	stmt = select(Transaction).offset(skip).limit(limit)
+	return list(db.scalars(stmt))
 
-    if item_type is not None:
-        query = query.filter(Item.item_type == item_type)
 
-    if date_from is not None:
-        query = query.filter(Item.date >= date_from)
+def create(db: Session, obj_in: TransactionCreate) -> Transaction:
+	db_obj = Transaction(
+		title=obj_in.title,
+		description=obj_in.description,
+		owner_id=obj_in.owner_id,
+		transaction_type=obj_in.transaction_type,
+		amount=obj_in.amount,
+		date=obj_in.date,
+		inventory_id=obj_in.inventory_id,
+	)
+	db.add(db_obj)
+	db.commit()
+	db.refresh(db_obj)
+	return db_obj
 
-    if date_to is not None:
-        query = query.filter(Item.date <= date_to)
 
-    if q:
-        ilike = f"%{q}%"
-        query = query.filter(or_(Item.title.ilike(ilike), Item.description.ilike(ilike)))
+def update(db: Session, db_obj: Transaction, obj_in: TransactionUpdate) -> Transaction:
+	data = obj_in.model_dump(exclude_unset=True)
+	for field, value in data.items():
+		setattr(db_obj, field, value)
+	db.add(db_obj)
+	db.commit()
+	db.refresh(db_obj)
+	return db_obj
 
-    return query.offset(skip).limit(limit).all()
 
-def get_item(db: Session, item_id: int):
-    return db.query(Item).filter(Item.id == item_id).first()
+def remove(db: Session, db_obj: Transaction) -> Transaction:
+	db.delete(db_obj)
+	db.commit()
+	return db_obj
 
-def update_item(db: Session, item_id: int, item_update: ItemUpdate):
-    db_item = db.query(Item).filter(Item.id == item_id).first()
-    if not db_item:
-        return None
-    update_data = item_update.model_dump(exclude_unset=True)
-    for field, value in update_data.items():
-        setattr(db_item, field, value)
-    db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
-    return db_item
 
-def delete_item(db: Session, item_id: int):
-    db_item = db.query(Item).filter(Item.id == item_id).first()
-    if not db_item:
-        return None
-    db.delete(db_item)
-    db.commit()
-    return db_item
+def search(
+	db: Session,
+	*,
+	owner_id: Optional[int] = None,
+	q: Optional[str] = None,
+	transaction_type: Optional[TransactionType] = None,
+	date_from: Optional[date] = None,
+	date_to: Optional[date] = None,
+	skip: int = 0,
+	limit: int = 100,
+
+) -> List[Transaction]:
+	filters = []
+	if owner_id is not None:
+		filters.append(Transaction.owner_id == owner_id)
+	if transaction_type is not None:
+		filters.append(Transaction.transaction_type == transaction_type)
+	if date_from is not None:
+		filters.append(Transaction.date >= date_from)
+	if date_to is not None:
+		filters.append(Transaction.date <= date_to)
+	if q:
+		like_exp = f"%{q.lower()}%"
+		filters.append(
+			or_(
+				func.lower(Transaction.title).like(like_exp),
+				func.lower(Transaction.description).like(like_exp),
+			)
+		)
+	stmt = select(Transaction)
+	if filters:
+		stmt = stmt.where(and_(*filters))
+	stmt = stmt.offset(skip).limit(limit)
+	return list(db.scalars(stmt))

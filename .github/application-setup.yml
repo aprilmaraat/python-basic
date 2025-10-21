@@ -1,0 +1,119 @@
+---
+title: FastAPI CRUD Application Bootstrap (Users + Transactions)
+description: One-shot GitHub Copilot prompt + guardrails to recreate and auto-run the FastAPI CRUD project with seeded data (Users + Transactions).
+globs:
+  - "**/*.py"
+  - "**/*.md"
+  - "requirements.txt"
+alwaysApply: false
+---
+
+# Purpose
+This rules file lets GitHub Copilot generate a fully working replica of the FastAPI CRUD service (Users + Transactions) with SQLite (`fastapi.db`) including automatic database creation, backward-compatible column enforcement, seeding sample data, and server startup.
+
+# INSTRUCTION-GUARD-BEGIN
+# If you change any code under app/ or main.py that affects models, endpoints, enums, seeding, or structure, you MUST update this file in the same commit.
+# Guard script computes a hash of these instruction blocks; modifying code without touching this file will fail CI.
+# Steps to update:
+# 1. Reflect new paths / names / endpoints here.
+# 2. Adjust example curl commands and quality gates.
+# 3. Keep enum lists exact.
+# 4. Increment the guard version number below.
+guard_version: 2
+# INSTRUCTION-GUARD-END
+
+# High-Level One-Shot Prompt (Paste into Copilot Chat)
+Generate a FastAPI CRUD application matching this spec EXACTLY and then run it. Steps Copilot must perform automatically without developer fixes:
+1. Create project structure:
+   - main.py
+   - requirements.txt (pinned versions listed below)
+   - app/core/config.py
+   - app/db/session.py
+  - app/models/{user.py,transaction.py}
+  - app/schemas/{user.py,item.py}  # legacy filename item.py now holds Transaction schemas
+  - app/crud/{user.py,item.py}     # legacy filename item.py now operates on Transaction
+  - app/routers/{user.py,item.py}  # legacy filename item.py now serves /transactions endpoints
+2. Implement Users & Transactions CRUD + /transactions/search with filters: owner_id, q (case-insensitive in title/description), transaction_type, date_from, date_to, skip, limit.
+3. Transaction types enum literals EXACT: expense | earning | capital (default expense).
+4. Use Python 3.9+ compatible code (no features breaking 3.9).
+5. Use SQLAlchemy 2.0 style (Declarative Base, Mapped, mapped_column) and Pydantic v2.
+6. Auto-create database file `fastapi.db` on startup and ensure (adding if missing) columns in transactions: transaction_type (enum), amount (int default 0), date (date default today).
+7. Allow CORS from http://localhost:3000 explicitly plus fallback * for dev.
+8. Implement seeding after tables exist: create 1 user + 3 sample transactions (expense, earning, capital) only if DB empty.
+9. Provide clear error handling: 404 not found, 400 duplicate email.
+10. After generation: install dependencies, run uvicorn, confirm endpoints live (/docs), output quick smoke test results.
+11. If any error occurs during setup (imports, missing module, enum mismatch), automatically patch the code and retry until the server runs.
+12. Print final run instructions for Windows PowerShell.
+
+# Pinned Dependencies (requirements.txt)
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+sqlalchemy==2.0.43
+pydantic==2.11.7
+pydantic-settings==2.10.1
+python-dotenv==1.1.1
+
+# Environment & Config
+  - app_name = "FastAPI CRUD"
+   - app/models/{user.py,transaction.py,category.py,weight.py,inventory.py}
+  - database_url = "sqlite:///fastapi.db"
+   - app/schemas/{user.py,item.py,category.py,weight.py,inventory.py}  # legacy filename item.py now holds Transaction schemas
+   - app/crud/{user.py,item.py,category.py,weight.py,inventory.py}     # legacy file name item.py operates on Transaction
+# Data Model (updated: Items renamed to Transactions)
+   - app/routers/{user.py,item.py,category.py,weight.py,inventory.py}  # adds /categories /weights /inventory
+ 3. Transaction types enum literals EXACT: expense | earning | capital (default expense).
+
+ 8. Implement seeding after tables exist: create 1 user + 3 sample transactions (expense, earning, capital) only if DB empty; also seed categories (LPG, Butane, Coca-cola, Pepsi Softdrinks, Beer) and weights (11kg, 225g, 170g, 500ml, 355ml (12oz), 235ml (8oz), 1L) if empty.
+  - inventory_id:int|None fk inventory.id (nullable reference to Inventory)
+
+# Seeding Rules (Transactions)
+If there are zero users:
+  1. title="Coffee", item_type="expense", amount=5
+ Settings via pydantic-settings with defaults:
+  3. title="Owner Capital", item_type="capital", amount=5000
+Dates: today.
+
+# CRUD & Search Behavior
+ Use .env override support.
+
+# Search Parameters
+
+# Implementation Details
+
+# CORS
+Add middleware allowing:
+
+# Quality Gates (Copilot must self-verify)
+1. `python -m uvicorn main:app --reload` starts without traceback.
+2. /docs loads.
+3. Smoke test (programmatic or curl):
+   - Create another user.
+   - List users (>=2 entries).
+  - Create a transaction for new user.
+  - Search by q substring of transaction title.
+  - Filter by transaction_type=capital returns 1 seeded transaction.
+4. Print summary: OK if all succeeded.
+
+# Auto-Heal Expectations
+If an error arises (ImportError, enum mismatch, attribute error), modify relevant file and retry automatically. Do not stop until server runs cleanly.
+
+# PowerShell Commands (Reference)
+```powershell
+python -m venv venv
+venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python -m uvicorn main:app --reload
+```
+
+# Output Requirements (After Generation)
+Copilot should output:
+  - curl http://127.0.0.1:8000/users
+  - curl "http://127.0.0.1:8000/transactions/search?transaction_type=capital"
+
+# Do / Don't
+Do: Keep code minimal, explicit, typed.
+Do: Fail fast with clear exceptions.
+Don't: Add unrelated frameworks, ORMs, or restructure paths.
+Don't: Introduce additional transaction types.
+
+# End of Rules

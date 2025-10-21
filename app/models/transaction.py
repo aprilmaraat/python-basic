@@ -22,6 +22,8 @@ class Transaction(Base):
 	owner_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)
 	transaction_type: Mapped[TransactionType] = mapped_column(default=TransactionType.expense, nullable=False)
 	amount: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+	inventory_id: Mapped[Optional[int]] = mapped_column(ForeignKey("inventory.id", ondelete="SET NULL"), index=True, nullable=True)
 	date: Mapped[date] = mapped_column(Date, nullable=False, default=date.today)
 
 	owner: Mapped["User"] = relationship("User", back_populates="transactions")
+	inventory: Mapped[Optional["Inventory"]] = relationship("Inventory", back_populates="transactions")

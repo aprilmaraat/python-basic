@@ -1,17 +1,19 @@
+from sqlalchemy.orm import sessionmaker, DeclarativeBase
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
 from app.core.config import settings
 
-engine = create_engine(
-    settings.DATABASE_URL, connect_args={"check_same_thread": False}
-)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
 
-# Dependency for routes
+class Base(DeclarativeBase):
+	pass
+
+
+engine = create_engine(settings.database_url, future=True, echo=False)
+SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False, future=True)
+
+
 def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+	db = SessionLocal()
+	try:
+		yield db
+	finally:
+		db.close()

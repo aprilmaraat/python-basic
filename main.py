@@ -1,56 +1,121 @@
-# from typing import Union
+# Entry point will be implemented after scaffolding.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import user, item
-from app.db.session import engine, Base
-from sqlalchemy import text
+from sqlalchemy import inspect, text
+from sqlalchemy.orm import Session
+from datetime import date
 
-# Create tables if not exist
-Base.metadata.create_all(bind=engine)
+from app.core.config import settings
+from app.db.session import Base, engine, SessionLocal
+from app.models.user import User
+from app.models.transaction import Transaction, TransactionType
+from app.models.category import Category
+from app.models.weight import Weight
+from app.models.inventory import Inventory
+from app.crud import user as crud_user
+from app.crud import item as crud_transaction
+from app.crud import category as crud_category
+from app.crud import weight as crud_weight
+from app.crud import inventory as crud_inventory
+from app.schemas.user import UserCreate
+from app.schemas.item import TransactionCreate
+from app.schemas.category import CategoryCreate
+from app.schemas.weight import WeightCreate
+from app.schemas.inventory import InventoryCreate
+from sqlalchemy import select, func
+from app.routers.user import router as users_router
+from app.routers.item import router as transactions_router
+from app.routers.category import router as categories_router
+from app.routers.weight import router as weights_router
+from app.routers.inventory import router as inventory_router
 
-# Ensure schema is in sync for existing SQLite DBs
-with engine.connect() as conn:
-    # Add missing column `item_type` on `items` if upgrading an old DB
-    try:
-        # Use driver-level SQL to avoid SQLAlchemy parsing quirks with PRAGMA
-        result = conn.exec_driver_sql("PRAGMA table_info(items);")
-        columns = [row[1] for row in result]
-        if "item_type" not in columns:
-            conn.exec_driver_sql(
-                "ALTER TABLE items ADD COLUMN item_type VARCHAR(20) NOT NULL DEFAULT 'expense'"
-            )
-            conn.commit()
-        if "amount" not in columns:
-            conn.exec_driver_sql(
-                "ALTER TABLE items ADD COLUMN amount INTEGER NOT NULL DEFAULT 0"
-            )
-            conn.commit()
-        if "date" not in columns:
-            conn.exec_driver_sql(
-                "ALTER TABLE items ADD COLUMN date DATE NOT NULL DEFAULT (CURRENT_DATE)"
-            )
-            conn.commit()
-    except Exception:
-        # If the table doesn't exist yet, create_all above will create it
-        pass
 
-app = FastAPI(title="FastAPI with SQLAlchemy", description="A simple CRUD API using FastAPI and SQLAlchemy")
+app = FastAPI(title=settings.app_name, debug=settings.debug)
 
-# Add CORS middleware
 app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
+	CORSMiddleware,
+	allow_origins=settings.cors_allow_origins,
+	allow_credentials=True,
+	allow_methods=["*"],
+	allow_headers=["*"],
 )
 
-app.include_router(user.router, prefix="/users", tags=["users"])
-app.include_router(item.router, prefix="/items", tags=["items"])
+app.include_router(users_router)
+app.include_router(transactions_router)
+app.include_router(categories_router)
+app.include_router(weights_router)
+app.include_router(inventory_router)
 
-@app.get("/")
-async def read_root():
-    return {"message": "Welcome to FastAPI Level 2 Example"}
+
+def enforce_columns(conn):
+	inspector = inspect(conn)
+	columns = {c['name']: c for c in inspector.get_columns('transactions')} if inspector.has_table('transactions') else {}
+	required = {
+		'transaction_type': 'TEXT',
+		'amount': 'INTEGER',
+		'date': 'DATE',
+	}
+	for name, sql_type in required.items():
+		if name not in columns:
+			conn.execute(text(f'ALTER TABLE transactions ADD COLUMN {name} {sql_type}'))
+
+
+def seed(db: Session):
+	# Seed only if no users
+	user_count = db.scalar(select(func.count()).select_from(User))
+	if user_count == 0:
+		seed_user = crud_user.create(
+			db,
+			obj_in=UserCreate(email="seed@example.com", full_name="Seed User", is_active=True)
+		)
+		today = date.today()
+		for title, transaction_type, amount in [
+			("Coffee", TransactionType.expense, 5),
+			("Salary", TransactionType.earning, 1000),
+			("Owner Capital", TransactionType.capital, 5000),
+		]:
+			crud_transaction.create(
+				db,
+				obj_in=TransactionCreate(
+					title=title,
+					description=None,
+					owner_id=seed_user.id,
+					transaction_type=transaction_type,
+					amount=amount,
+					date=today,
+				),
+			)
+
+		# Seed Categories
+		category_names = ["LPG", "Butane", "Coca-cola", "Pepsi Softdrinks", "Beer"]
+		existing_categories = {c.name for c in db.scalars(select(Category)).all()}
+		for name in category_names:
+			if name not in existing_categories:
+				crud_category.create(db, CategoryCreate(name=name, description=None))
+
+		# Seed Weights
+		weight_names = ["11kg", "225g", "170g", "500ml", "355ml (12oz)", "235ml (8oz)", "1L"]
+		existing_weights = {w.name for w in db.scalars(select(Weight)).all()}
+		for name in weight_names:
+			if name not in existing_weights:
+				crud_weight.create(db, WeightCreate(name=name, description=None))
+
+
+@app.on_event("startup")
+def on_startup():
+	# Create tables
+	Base.metadata.create_all(bind=engine)
+	# Enforce columns for backward compatibility
+	with engine.connect() as conn:
+		enforce_columns(conn)
+	# Seed
+	db = SessionLocal()
+	try:
+		seed(db)
+	finally:
+		db.close()
+
+
+@app.get("/health")
+def health():
+	return {"status": "ok"}

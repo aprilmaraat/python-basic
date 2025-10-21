@@ -1,0 +1,139 @@
+---
+description: One-shot Cursor bootstrap rules to recreate and auto-run the FastAPI CRUD app with seeding (Users + Transactions).
+globs:
+  - "**/*.py"
+  - "**/*.md"
+  - "requirements.txt"
+alwaysApply: false
+---
+
+Cursor Application Setup (Bootstrap)
+
+You are to generate a fully working FastAPI CRUD application (Users + Transactions + search) with SQLite and then confirm it runs. Automate every step: file creation, dependency installation, database creation, seeding, and server startup. If errors occur, automatically fix them and retry until success.
+
+# INSTRUCTION-GUARD-BEGIN
+# Update this file whenever code changes affect: data model, endpoints, enums, seeding rules, directory layout, or quality gates.
+# Guard script enforces that commits modifying app/ or main.py also modify this file or .github/application-setup.yml.
+# Increment guard_version when making substantive changes.
+guard_version: 4
+# INSTRUCTION-GUARD-END
+
+Project Specification
+- Python 3.9+ compatible (no syntax requiring >3.9).
+- FastAPI==0.116.1
+- Uvicorn[standard]==0.35.0
+- SQLAlchemy==2.0.43
+- Pydantic==2.11.7
+- pydantic-settings==2.10.1
+- python-dotenv==1.1.1
+- SQLite DB file: fastapi.db (created/updated at runtime)
+- Transaction types enum EXACT: expense | earning | capital (default expense)
+
+Directory Layout
+- main.py
+- requirements.txt (pinned above)
+- app/
+  - core/config.py
+  - db/session.py
+  - models/user.py, models/transaction.py, models/category.py, models/weight.py, models/inventory.py
+  - schemas/user.py, schemas/item.py, schemas/category.py, schemas/weight.py, schemas/inventory.py   (legacy filename item.py now houses Transaction schemas)
+  - crud/user.py, crud/item.py, crud/category.py, crud/weight.py, crud/inventory.py        (legacy filename item.py now implements Transaction CRUD)
+  - routers/user.py, routers/item.py, routers/category.py, routers/weight.py, routers/inventory.py  (legacy filename item.py now exposes /transactions endpoints and new CRUD resources)
+
+Data Model
+User
+- id:int pk
+- email:str unique idx not null
+- full_name:str|None
+- is_active:bool default True
+
+Transaction, Category, Weight, Inventory
+- id:int pk
+- title:str idx not null
+- description:str|None
+- owner_id:int fk users.id cascade
+- transaction_type: enum("expense","earning","capital") default "expense"
+- inventory_id:int|None fk inventory.id
+Category:
+- id:int pk
+- name:str unique idx
+- description:str|None
+Weight:
+- id:int pk
+- name:str unique idx
+- description:str|None
+Inventory:
+- id:int pk
+- name:str idx
+- shortname:str|None
+- purchase_price:int
+- selling_price:int
+- quantity:int
+- category_id:int fk categories.id
+- weight_id:int fk weights.id
+- transactions: relationship list (each Transaction has nullable inventory_id)
+- amount:int default 0
+- date: date default today
+
+Behavior Requirements
+- CRUD endpoints for Users, Transactions, Categories, Weights, Inventory.
+- /transactions/search with filters: owner_id, q (case-insensitive substring match in title OR description), transaction_type, date_from, date_to, skip, limit.
+- SQLAlchemy 2.0 style (`Mapped`, `mapped_column`, `select`).
+- Pydantic v2 with `model_config = {"from_attributes": True}` for read models.
+- Startup: create tables, ensure backward-compatible columns (transaction_type, amount, date) and seed categories + weights if absent.
+- Seeding (only if no users): create user seed@example.com + 3 transactions (expense/earning/capital); also seed categories (LPG, Butane, Coca-cola, Pepsi Softdrinks, Beer) and weights (11kg, 225g, 170g, 500ml, 355ml (12oz), 235ml (8oz), 1L).
+- CORS: allow http://localhost:3000 plus fallback `*`.
+- Error responses: 404 for missing entities; 400 for duplicate email.
+
+Seeding Details
+If user table empty:
+- User: email="seed@example.com", full_name="Seed User"
+- Transactions (owner_id = that user):
+  1. Coffee (expense, amount=5)
+  2. Salary (earning, amount=1000)
+  3. Owner Capital (capital, amount=5000)
+
+Quality Gates
+1. `python -m uvicorn main:app --reload` starts without errors.
+2. /docs and /redoc reachable.
+3. Smoke test script (internal):
+   - List users (>=1 after seed).
+   - Create additional user; list now >=2.
+  - Create transaction for new user; search by q substring; filter by transaction_type=capital returns 1 seeded transaction.
+4. Print PASS summary.
+
+Automatic Recovery
+On any runtime or import error:
+- Diagnose quickly.
+- Patch offending file.
+- Retry startup.
+- Repeat until success.
+
+PowerShell Setup Reference
+```powershell
+python -m venv venv
+venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python -m uvicorn main:app --reload
+```
+
+One-Shot Bootstrap Prompt (Paste)
+Create the FastAPI CRUD project exactly as specified. After generation:
+1. Show directory tree and requirements.txt.
+2. Start server (reload not required if complicates flow).
+3. Run inline smoke tests (HTTP) verifying endpoints above.
+4. Output success summary and example curl:
+   - curl http://127.0.0.1:8000/users
+  - curl "http://127.0.0.1:8000/transactions/search?transaction_type=capital"
+  - curl http://127.0.0.1:8000/categories
+  - curl http://127.0.0.1:8000/weights
+  - curl http://127.0.0.1:8000/inventory
+If a failure occurs at any step, fix code and retry automatically.
+
+Do / Don't
+Do: Keep code explicit, typed, minimal.
+Do: Use safe SQLAlchemy inspection + ALTER only when missing columns.
+Don't: Add frameworks or restructure directories.
+Don't: Introduce extra transaction types.
+
+END OF CURSOR APPLICATION SETUP RULES
