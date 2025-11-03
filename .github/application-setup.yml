@@ -19,7 +19,7 @@ This rules file lets GitHub Copilot generate a fully working replica of the Fast
 # 2. Adjust example curl commands and quality gates.
 # 3. Keep enum lists exact.
 # 4. Increment the guard version number below.
-guard_version: 2
+guard_version: 5
 # INSTRUCTION-GUARD-END
 
 # High-Level One-Shot Prompt (Paste into Copilot Chat)
@@ -33,14 +33,14 @@ Generate a FastAPI CRUD application matching this spec EXACTLY and then run it. 
   - app/schemas/{user.py,item.py}  # legacy filename item.py now holds Transaction schemas
   - app/crud/{user.py,item.py}     # legacy filename item.py now operates on Transaction
   - app/routers/{user.py,item.py}  # legacy filename item.py now serves /transactions endpoints
-2. Implement Users & Transactions CRUD + /transactions/search with filters: owner_id, q (case-insensitive in title/description), transaction_type, date_from, date_to, skip, limit.
+2. Implement Users & Transactions CRUD + /transactions/search with filters: owner_id, q (case-insensitive in title/description), transaction_type, date_from, date_to, skip, limit. Implement Inventory CRUD + /inventory/search with filters: q (name/shortname), category_id, weight_id, min_quantity, max_quantity, skip, limit. Add /inventory/{id}/detailed endpoint with nested category and weight data.
 3. Transaction types enum literals EXACT: expense | earning | capital (default expense).
 4. Use Python 3.9+ compatible code (no features breaking 3.9).
 5. Use SQLAlchemy 2.0 style (Declarative Base, Mapped, mapped_column) and Pydantic v2.
 6. Auto-create database file `fastapi.db` on startup and ensure (adding if missing) columns in transactions: transaction_type (enum), amount (int default 0), date (date default today).
 7. Allow CORS from http://localhost:3000 explicitly plus fallback * for dev.
-8. Implement seeding after tables exist: create 1 user + 3 sample transactions (expense, earning, capital) only if DB empty.
-9. Provide clear error handling: 404 not found, 400 duplicate email.
+8. DO NOT seed database automatically on startup. Provide POST /seed endpoint for manual seeding that creates 1 user + 3 sample transactions (expense, earning, capital) only if DB empty; also seed categories (LPG, Butane, Coca-cola, Pepsi Softdrinks, Beer) and weights (11kg, 225g, 170g, 500ml, 355ml (12oz), 235ml (8oz), 1L) if empty; also seed sample inventory items with proper category_id and weight_id references if empty.
+9. Provide clear error handling: 404 not found, 400 duplicate email. Validate category_id and weight_id on inventory create/update operations.
 10. After generation: install dependencies, run uvicorn, confirm endpoints live (/docs), output quick smoke test results.
 11. If any error occurs during setup (imports, missing module, enum mismatch), automatically patch the code and retry until the server runs.
 12. Print final run instructions for Windows PowerShell.
@@ -66,11 +66,20 @@ python-dotenv==1.1.1
  8. Implement seeding after tables exist: create 1 user + 3 sample transactions (expense, earning, capital) only if DB empty; also seed categories (LPG, Butane, Coca-cola, Pepsi Softdrinks, Beer) and weights (11kg, 225g, 170g, 500ml, 355ml (12oz), 235ml (8oz), 1L) if empty.
   - inventory_id:int|None fk inventory.id (nullable reference to Inventory)
 
-# Seeding Rules (Transactions)
+# Seeding Rules (Manual via POST /seed)
+Manual seeding available via POST /seed endpoint (does not run automatically on startup).
 If there are zero users:
-  1. title="Coffee", item_type="expense", amount=5
- Settings via pydantic-settings with defaults:
-  3. title="Owner Capital", item_type="capital", amount=5000
+  1. title="Coffee", transaction_type="expense", amount=5
+  2. title="Salary", transaction_type="earning", amount=1000
+  3. title="Owner Capital", transaction_type="capital", amount=5000
+Categories seeded: LPG, Butane, Coca-cola, Pepsi Softdrinks, Beer
+Weights seeded: 11kg, 225g, 170g, 500ml, 355ml (12oz), 235ml (8oz), 1L
+If inventory table empty:
+  1. LPG Gas Tank (LPG + 11kg): purchase=650, selling=850, qty=10
+  2. Butane Canister (Butane + 225g): purchase=45, selling=65, qty=25
+  3. Coca-Cola Bottle (Coca-cola + 500ml): purchase=18, selling=25, qty=50
+  4. Pepsi Can (Pepsi Softdrinks + 355ml): purchase=15, selling=22, qty=40
+  5. Beer Bottle (Beer + 355ml): purchase=30, selling=45, qty=30
 Dates: today.
 
 # CRUD & Search Behavior
@@ -87,11 +96,13 @@ Add middleware allowing:
 1. `python -m uvicorn main:app --reload` starts without traceback.
 2. /docs loads.
 3. Smoke test (programmatic or curl):
+   - Server starts with empty database (no automatic seeding).
+   - Call POST /seed to manually seed the database.
    - Create another user.
    - List users (>=2 entries).
-  - Create a transaction for new user.
-  - Search by q substring of transaction title.
-  - Filter by transaction_type=capital returns 1 seeded transaction.
+   - Create a transaction for new user.
+   - Search by q substring of transaction title.
+   - Filter by transaction_type=capital returns 1 seeded transaction.
 4. Print summary: OK if all succeeded.
 
 # Auto-Heal Expectations

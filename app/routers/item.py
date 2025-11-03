@@ -17,6 +17,30 @@ from app.crud import inventory as crud_inventory
 router = APIRouter(prefix="/transactions", tags=["transactions"])
 
 
+@router.get("/search", response_model=list[TransactionReadSimple])
+def search_transactions(
+	*,
+	db: Session = Depends(get_db),
+	owner_id: Optional[int] = Query(default=None),
+	q: Optional[str] = Query(default=None),
+	transaction_type: Optional[TransactionType] = Query(default=None),
+	date_from: Optional[dt_date] = Query(default=None),
+	date_to: Optional[dt_date] = Query(default=None),
+	skip: int = Query(0, ge=0),
+	limit: int = Query(100, ge=1),
+):
+	return crud_transaction.search(
+		db,
+		owner_id=owner_id,
+		q=q,
+		transaction_type=transaction_type,
+		date_from=date_from,
+		date_to=date_to,
+		skip=skip,
+		limit=limit,
+	)
+
+
 @router.post("", response_model=TransactionReadSimple, status_code=201)
 def create_transaction(*, db: Session = Depends(get_db), obj_in: TransactionCreate):
 	if not crud_user.get(db, obj_in.owner_id):
@@ -58,27 +82,3 @@ def delete_transaction(*, db: Session = Depends(get_db), transaction_id: int):
 	if not db_obj:
 		raise HTTPException(status_code=404, detail="Transaction not found")
 	return crud_transaction.remove(db, db_obj)
-
-
-@router.get("/search", response_model=list[TransactionReadSimple])
-def search_transactions(
-	*,
-	db: Session = Depends(get_db),
-	owner_id: Optional[int] = Query(default=None),
-	q: Optional[str] = Query(default=None),
-	transaction_type: Optional[TransactionType] = Query(default=None),
-	date_from: Optional[dt_date] = Query(default=None),
-	date_to: Optional[dt_date] = Query(default=None),
-	skip: int = Query(0, ge=0),
-	limit: int = Query(100, ge=1),
-):
-	return crud_transaction.search(
-		db,
-		owner_id=owner_id,
-		q=q,
-		transaction_type=transaction_type,
-		date_from=date_from,
-		date_to=date_to,
-		skip=skip,
-		limit=limit,
-	)

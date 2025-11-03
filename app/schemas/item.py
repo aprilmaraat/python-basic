@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional
 from datetime import date as dt_date
+from decimal import Decimal, ROUND_HALF_UP
 from app.models.transaction import TransactionType
 
 
@@ -8,8 +9,15 @@ class TransactionBase(BaseModel):
 	title: str
 	description: Optional[str] = None
 	transaction_type: TransactionType = TransactionType.expense
-	amount: int = 0
+	amount_per_unit: Decimal = Decimal('0.00')
+	quantity: int = 1
 	date: dt_date = Field(default_factory=dt_date.today)
+
+	@field_validator("amount_per_unit", mode="before")
+	def to_decimal(cls, v):  # type: ignore[override]
+		if isinstance(v, (int, float, str)):
+			return Decimal(str(v)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+		return v
 
 
 class TransactionCreate(TransactionBase):
@@ -21,9 +29,18 @@ class TransactionUpdate(BaseModel):
 	title: Optional[str] = None
 	description: Optional[str] = None
 	transaction_type: Optional[TransactionType] = None
-	amount: Optional[int] = None
+	amount_per_unit: Optional[Decimal] = None
+	quantity: Optional[int] = None
 	date: Optional[dt_date] = None
 	inventory_id: Optional[int] = None
+
+	@field_validator("amount_per_unit", mode="before")
+	def to_decimal(cls, v):  # type: ignore[override]
+		if v is None:
+			return v
+		if isinstance(v, (int, float, str)):
+			return Decimal(str(v)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+		return v
 
 
 class TransactionRead(BaseModel):
@@ -32,7 +49,9 @@ class TransactionRead(BaseModel):
 	description: Optional[str]
 	owner_id: int
 	transaction_type: TransactionType
-	amount: int
+	amount_per_unit: Decimal
+	quantity: int
+	total_amount: Decimal
 	date: dt_date
 	inventory_id: Optional[int]
 
@@ -43,7 +62,9 @@ class TransactionReadSimple(BaseModel):
 	id: int
 	title: str
 	transaction_type: TransactionType
-	amount: int
+	amount_per_unit: Decimal
+	quantity: int
+	total_amount: Decimal
 	date: dt_date
 	inventory_id: Optional[int]
 

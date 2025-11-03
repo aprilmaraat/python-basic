@@ -12,7 +12,6 @@ class TransactionType(str, Enum):
 	earning = "earning"
 	capital = "capital"
 
-
 class Transaction(Base):
 	__tablename__ = "transactions"
 

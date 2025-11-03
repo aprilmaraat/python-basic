@@ -2,6 +2,7 @@ from typing import List, Optional
 from datetime import date
 from sqlalchemy.orm import Session
 from sqlalchemy import select, and_, or_, func
+from decimal import Decimal
 from app.models.transaction import Transaction, TransactionType
 from app.schemas.item import TransactionCreate, TransactionUpdate
 
@@ -21,7 +22,8 @@ def create(db: Session, obj_in: TransactionCreate) -> Transaction:
 		description=obj_in.description,
 		owner_id=obj_in.owner_id,
 		transaction_type=obj_in.transaction_type,
-		amount=obj_in.amount,
+		amount_per_unit=Decimal(obj_in.amount_per_unit),
+		quantity=obj_in.quantity,
 		date=obj_in.date,
 		inventory_id=obj_in.inventory_id,
 	)
@@ -34,6 +36,8 @@ def create(db: Session, obj_in: TransactionCreate) -> Transaction:
 def update(db: Session, db_obj: Transaction, obj_in: TransactionUpdate) -> Transaction:
 	data = obj_in.model_dump(exclude_unset=True)
 	for field, value in data.items():
+		if field == "amount_per_unit" and value is not None:
+			value = Decimal(value)
 		setattr(db_obj, field, value)
 	db.add(db_obj)
 	db.commit()
