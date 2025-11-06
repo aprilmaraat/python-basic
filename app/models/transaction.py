@@ -30,6 +30,7 @@ class Transaction(Base):
 	# Renamed logically from 'amount' to 'amount_per_unit'; keep underlying column name 'amount' for backward compatibility.
 	amount_per_unit: Mapped[Decimal] = mapped_column('amount', Numeric(10, 2), default=Decimal('0.00'), nullable=False)
 	quantity: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
+	purchase_price: Mapped[Decimal] = mapped_column(Numeric(10, 2), default=Decimal('0.00'), nullable=False)
 	inventory_id: Mapped[Optional[int]] = mapped_column(ForeignKey("inventory.id", ondelete="SET NULL"), index=True, nullable=True)
 	date: Mapped[date] = mapped_column(Date, nullable=False, default=date.today)
 

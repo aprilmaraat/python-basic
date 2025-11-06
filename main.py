@@ -72,10 +72,10 @@ def seed(db: Session):
 			obj_in=UserCreate(email="seed@example.com", full_name="Seed User", is_active=True)
 		)
 		today = date.today()
-		for title, transaction_type, amount_per_unit in [
-			("Coffee", TransactionType.expense, Decimal('5.00')),
-			("Salary", TransactionType.earning, Decimal('1000.00')),
-			("Owner Capital", TransactionType.capital, Decimal('5000.00')),
+		for title, transaction_type, amount_per_unit, purchase_price in [
+			("Coffee", TransactionType.expense, Decimal('5.00'), Decimal('3.50')),
+			("Salary", TransactionType.earning, Decimal('1000.00'), Decimal('0.00')),
+			("Owner Capital", TransactionType.capital, Decimal('5000.00'), Decimal('0.00')),
 		]:
 			crud_transaction.create(
 				db,
@@ -86,6 +86,7 @@ def seed(db: Session):
 					transaction_type=transaction_type,
 					amount_per_unit=amount_per_unit,
 					quantity=1,
+					purchase_price=purchase_price,
 					date=today,
 				),
 			)
@@ -121,21 +122,19 @@ def seed(db: Session):
 		
 		# Create sample inventory items
 		sample_inventory = [
-			("LPG Gas Tank", "LPG-11", Decimal('650.00'), Decimal('850.00'), 10, lpg_cat.id, weight_11kg.id),
-			("Butane Canister", "BUT-225", Decimal('45.00'), Decimal('65.00'), 25, butane_cat.id, weight_225g.id),
-			("Coca-Cola Bottle", "COKE-500", Decimal('18.00'), Decimal('25.00'), 50, cocacola_cat.id, weight_500ml.id),
-			("Pepsi Can", "PEPSI-355", Decimal('15.00'), Decimal('22.00'), 40, pepsi_cat.id, weight_355ml.id),
-			("Beer Bottle", "BEER-355", Decimal('30.00'), Decimal('45.00'), 30, beer_cat.id, weight_355ml.id),
+			("LPG Gas Tank", "LPG-11", 10, lpg_cat.id, weight_11kg.id),
+			("Butane Canister", "BUT-225", 25, butane_cat.id, weight_225g.id),
+			("Coca-Cola Bottle", "COKE-500", 50, cocacola_cat.id, weight_500ml.id),
+			("Pepsi Can", "PEPSI-355", 40, pepsi_cat.id, weight_355ml.id),
+			("Beer Bottle", "BEER-355", 30, beer_cat.id, weight_355ml.id),
 		]
 		
-		for name, shortname, purchase, selling, qty, cat_id, wt_id in sample_inventory:
+		for name, shortname, qty, cat_id, wt_id in sample_inventory:
 			crud_inventory.create(
 				db,
 				obj_in=InventoryCreate(
 					name=name,
 					shortname=shortname,
-					purchase_price=purchase,
-					selling_price=selling,
 					quantity=qty,
 					category_id=cat_id,
 					weight_id=wt_id,

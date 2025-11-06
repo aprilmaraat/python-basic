@@ -1,8 +1,12 @@
 from pydantic import BaseModel, Field, field_validator
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from datetime import date as dt_date
 from decimal import Decimal, ROUND_HALF_UP
 from app.models.transaction import TransactionType
+
+if TYPE_CHECKING:
+	from app.schemas.user import UserReadSimple
+	from app.schemas.inventory import InventoryReadSimple
 
 
 class TransactionBase(BaseModel):
@@ -11,9 +15,10 @@ class TransactionBase(BaseModel):
 	transaction_type: TransactionType = TransactionType.expense
 	amount_per_unit: Decimal = Decimal('0.00')
 	quantity: int = 1
+	purchase_price: Decimal = Decimal('0.00')
 	date: dt_date = Field(default_factory=dt_date.today)
 
-	@field_validator("amount_per_unit", mode="before")
+	@field_validator("amount_per_unit", "purchase_price", mode="before")
 	def to_decimal(cls, v):  # type: ignore[override]
 		if isinstance(v, (int, float, str)):
 			return Decimal(str(v)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
@@ -31,10 +36,11 @@ class TransactionUpdate(BaseModel):
 	transaction_type: Optional[TransactionType] = None
 	amount_per_unit: Optional[Decimal] = None
 	quantity: Optional[int] = None
+	purchase_price: Optional[Decimal] = None
 	date: Optional[dt_date] = None
 	inventory_id: Optional[int] = None
 
-	@field_validator("amount_per_unit", mode="before")
+	@field_validator("amount_per_unit", "purchase_price", mode="before")
 	def to_decimal(cls, v):  # type: ignore[override]
 		if v is None:
 			return v
@@ -51,6 +57,7 @@ class TransactionRead(BaseModel):
 	transaction_type: TransactionType
 	amount_per_unit: Decimal
 	quantity: int
+	purchase_price: Decimal
 	total_amount: Decimal
 	date: dt_date
 	inventory_id: Optional[int]
@@ -61,11 +68,41 @@ class TransactionRead(BaseModel):
 class TransactionReadSimple(BaseModel):
 	id: int
 	title: str
+	description: Optional[str]
+	owner_id: int
 	transaction_type: TransactionType
 	amount_per_unit: Decimal
 	quantity: int
+	purchase_price: Decimal
 	total_amount: Decimal
 	date: dt_date
 	inventory_id: Optional[int]
 
 	model_config = {"from_attributes": True}
+
+
+# Enhanced read schema with nested owner and inventory information
+class TransactionReadDetailed(BaseModel):
+	id: int
+	title: str
+	description: Optional[str]
+	owner_id: int
+	transaction_type: TransactionType
+	amount_per_unit: Decimal
+	quantity: int
+	purchase_price: Decimal
+	total_amount: Decimal
+	date: dt_date
+	inventory_id: Optional[int]
+	owner: "UserReadSimple"
+	inventory: Optional["InventoryReadSimple"] = None
+
+	model_config = {"from_attributes": True}
+
+
+# Import at the end to avoid circular imports
+from app.schemas.user import UserReadSimple
+from app.schemas.inventory import InventoryReadSimple
+
+# Update forward references
+TransactionReadDetailed.model_rebuild()
