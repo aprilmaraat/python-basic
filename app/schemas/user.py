@@ -1,6 +1,8 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional, List
-from app.schemas.item import TransactionReadSimple
+from typing import Optional, List, TYPE_CHECKING
+
+if TYPE_CHECKING:
+	from app.schemas.item import TransactionReadSimple
 
 
 class UserBase(BaseModel):
@@ -24,7 +26,7 @@ class UserRead(BaseModel):
 	email: EmailStr
 	full_name: Optional[str] = None
 	is_active: bool
-	transactions: List[TransactionReadSimple] = []
+	transactions: List["TransactionReadSimple"] = []
 
 	model_config = {"from_attributes": True}
 
@@ -36,3 +38,10 @@ class UserReadSimple(BaseModel):
 	is_active: bool
 
 	model_config = {"from_attributes": True}
+
+
+# Import at the end to avoid circular imports
+from app.schemas.item import TransactionReadSimple
+
+# Update forward references
+UserRead.model_rebuild()

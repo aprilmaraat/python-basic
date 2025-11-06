@@ -19,7 +19,7 @@ This rules file lets GitHub Copilot generate a fully working replica of the Fast
 # 2. Adjust example curl commands and quality gates.
 # 3. Keep enum lists exact.
 # 4. Increment the guard version number below.
-guard_version: 5
+guard_version: 6
 # INSTRUCTION-GUARD-END
 
 # High-Level One-Shot Prompt (Paste into Copilot Chat)

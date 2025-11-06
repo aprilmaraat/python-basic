@@ -10,6 +10,7 @@ from app.schemas.item import (
 	TransactionCreate,
 	TransactionUpdate,
 	TransactionReadSimple,
+	TransactionReadDetailed,
 )
 from app.models.transaction import TransactionType
 from app.crud import inventory as crud_inventory
@@ -59,6 +60,15 @@ def list_transactions(
 
 @router.get("/{transaction_id}", response_model=TransactionRead)
 def get_transaction(*, db: Session = Depends(get_db), transaction_id: int):
+	db_obj = crud_transaction.get(db, transaction_id)
+	if not db_obj:
+		raise HTTPException(status_code=404, detail="Transaction not found")
+	return db_obj
+
+
+@router.get("/{transaction_id}/detailed", response_model=TransactionReadDetailed)
+def get_transaction_detailed(*, db: Session = Depends(get_db), transaction_id: int):
+	"""Get transaction with detailed owner and inventory information."""
 	db_obj = crud_transaction.get(db, transaction_id)
 	if not db_obj:
 		raise HTTPException(status_code=404, detail="Transaction not found")

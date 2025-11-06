@@ -29,16 +29,17 @@ You can also use the interactive API docs at http://127.0.0.1:8000/docs and exec
 - **Categories**: LPG, Butane, Coca-cola, Pepsi Softdrinks, Beer
 - **Weights**: 11kg, 225g, 170g, 500ml, 355ml (12oz), 235ml (8oz), 1L
 - **Inventory**: 5 sample inventory items with proper category and weight references:
-  - LPG Gas Tank (LPG + 11kg)
-  - Butane Canister (Butane + 225g)
-  - Coca-Cola Bottle (Coca-cola + 500ml)
-  - Pepsi Can (Pepsi Softdrinks + 355ml)
-  - Beer Bottle (Beer + 355ml)
+  - LPG Gas Tank (LPG + 11kg) - qty: 10
+  - Butane Canister (Butane + 225g) - qty: 25
+  - Coca-Cola Bottle (Coca-cola + 500ml) - qty: 50
+  - Pepsi Can (Pepsi Softdrinks + 355ml) - qty: 40
+  - Beer Bottle (Beer + 355ml) - qty: 30
 
 ## Endpoints
 - /users CRUD
 - /transactions CRUD
 - /transactions/search with filters: owner_id, q, transaction_type, date_from, date_to, skip, limit
+- /transactions/{id}/detailed - Get transaction with detailed owner and inventory information
 - /categories CRUD
 - /weights CRUD
 - /inventory CRUD

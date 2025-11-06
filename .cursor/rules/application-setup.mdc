@@ -15,7 +15,7 @@ You are to generate a fully working FastAPI CRUD application (Users + Transactio
 # Update this file whenever code changes affect: data model, endpoints, enums, seeding rules, directory layout, or quality gates.
 # Guard script enforces that commits modifying app/ or main.py also modify this file or .github/application-setup.yml.
 # Increment guard_version when making substantive changes.
-guard_version: 7
+guard_version: 8
 # INSTRUCTION-GUARD-END
 
 Project Specification
