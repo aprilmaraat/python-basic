@@ -64,72 +64,88 @@ def enforce_columns(conn):
 
 
 def seed(db: Session):
-	# Seed user and sample transactions only if no users exist
+	# Seed user only if no users exist
 	user_count = db.scalar(select(func.count()).select_from(User))
 	if user_count == 0:
-		seed_user = crud_user.create(
+		crud_user.create(
 			db,
-			obj_in=UserCreate(email="seed@example.com", full_name="Seed User", is_active=True)
-		)
-		today = date.today()
-		for title, transaction_type, amount_per_unit, purchase_price in [
-			("Coffee", TransactionType.expense, Decimal('5.00'), Decimal('3.50')),
-			("Salary", TransactionType.earning, Decimal('1000.00'), Decimal('0.00')),
-			("Owner Capital", TransactionType.capital, Decimal('5000.00'), Decimal('0.00')),
-		]:
-			crud_transaction.create(
-				db,
-				obj_in=TransactionCreate(
-					title=title,
-					description=None,
-					owner_id=seed_user.id,
-					transaction_type=transaction_type,
-					amount_per_unit=amount_per_unit,
-					quantity=1,
-					purchase_price=purchase_price,
-					date=today,
-				),
+			obj_in=UserCreate(
+				email="dawnblaze.wholesale.distributions@gmail.com",
+				full_name="DB Wholesale Trading",
+				is_active=True
 			)
+		)
 
 	# Seed Categories (always ensure presence)
-	category_names = ["LPG", "Butane", "Coca-cola", "Pepsi Softdrinks", "Beer"]
+	category_names = [
+		"LPG",
+		"Butane",
+		"Coca-cola Soft Drinks",
+		"Pepsi Soft Drinks",
+		"Beer"
+	]
 	existing_categories = {c.name for c in db.scalars(select(Category)).all()}
 	for name in category_names:
 		if name not in existing_categories:
 			crud_category.create(db, CategoryCreate(name=name, description=None))
 
 	# Seed Weights (always ensure presence)
-	weight_names = ["11kg", "225g", "170g", "500ml", "355ml (12oz)", "235ml (8oz)", "1L"]
+	weight_names = [
+		"11kg",
+		"225g",
+		"170g",
+		"500mL",
+		"355ml (12oz)",
+		"235ml (8oz)",
+		"1L",
+		"190mL",
+		"290mL",
+		"1.5L"
+	]
 	existing_weights = {w.name for w in db.scalars(select(Weight)).all()}
 	for name in weight_names:
 		if name not in existing_weights:
 			crud_weight.create(db, WeightCreate(name=name, description=None))
 
-	# Seed Inventory (sample items with category and weight references)
+	# Seed Inventory (actual inventory items)
 	inventory_count = db.scalar(select(func.count()).select_from(Inventory))
 	if inventory_count == 0:
-		# Get category and weight references
+		# Get category references
 		lpg_cat = db.scalars(select(Category).where(Category.name == "LPG")).first()
 		butane_cat = db.scalars(select(Category).where(Category.name == "Butane")).first()
-		cocacola_cat = db.scalars(select(Category).where(Category.name == "Coca-cola")).first()
-		pepsi_cat = db.scalars(select(Category).where(Category.name == "Pepsi Softdrinks")).first()
+		cocacola_cat = db.scalars(select(Category).where(Category.name == "Coca-cola Soft Drinks")).first()
+		pepsi_cat = db.scalars(select(Category).where(Category.name == "Pepsi Soft Drinks")).first()
 		beer_cat = db.scalars(select(Category).where(Category.name == "Beer")).first()
 		
+		# Get weight references
 		weight_11kg = db.scalars(select(Weight).where(Weight.name == "11kg")).first()
 		weight_225g = db.scalars(select(Weight).where(Weight.name == "225g")).first()
-		weight_500ml = db.scalars(select(Weight).where(Weight.name == "500ml")).first()
+		weight_170g = db.scalars(select(Weight).where(Weight.name == "170g")).first()
+		weight_500ml = db.scalars(select(Weight).where(Weight.name == "500mL")).first()
 		weight_355ml = db.scalars(select(Weight).where(Weight.name == "355ml (12oz)")).first()
+		weight_235ml = db.scalars(select(Weight).where(Weight.name == "235ml (8oz)")).first()
+		weight_1L = db.scalars(select(Weight).where(Weight.name == "1L")).first()
+		weight_190ml = db.scalars(select(Weight).where(Weight.name == "190mL")).first()
+		weight_290ml = db.scalars(select(Weight).where(Weight.name == "290mL")).first()
+		weight_1_5L = db.scalars(select(Weight).where(Weight.name == "1.5L")).first()
 		
-		# Create sample inventory items
-		sample_inventory = [
-			("LPG Gas Tank", "LPG-11", 10, lpg_cat.id, weight_11kg.id),
-			("Butane Canister", "BUT-225", 25, butane_cat.id, weight_225g.id),
-			("Coca-Cola Bottle", "COKE-500", 50, cocacola_cat.id, weight_500ml.id),
-			("Pepsi Can", "PEPSI-355", 40, pepsi_cat.id, weight_355ml.id),
-			("Beer Bottle", "BEER-355", 30, beer_cat.id, weight_355ml.id),
+		# Create actual inventory items (name, shortname, quantity, category_id, weight_id)
+		inventory_items = [
+			("LPG", "LPG-11", 0, lpg_cat.id, weight_11kg.id),
+			("Butane 225g", "BUT-225", 0, butane_cat.id, weight_225g.id),
+			("Coca-Cola 1L", "COKE-500", 0, cocacola_cat.id, weight_1L.id),
+			("Pepsi 1L", "PEPSI-355", 0, pepsi_cat.id, weight_1L.id),
+			("Beer", "BEER-355", 0, beer_cat.id, weight_355ml.id),
+			("Butane 170g", None, 0, butane_cat.id, weight_170g.id),
+			("Coca-Cola 8oz", None, 0, cocacola_cat.id, weight_235ml.id),
+			("Pepsi 8oz", None, 0, pepsi_cat.id, weight_235ml.id),
+			("Pepsi 12oz", None, 0, pepsi_cat.id, weight_355ml.id),
+			("Coca-Cola 190mL", None, 0, cocacola_cat.id, weight_190ml.id),
+			("Coca-Cola 290mL", None, 0, cocacola_cat.id, weight_290ml.id),
+			("Coca-Cola 1.5L", None, 0, cocacola_cat.id, weight_1_5L.id),
 		]
 		
-		for name, shortname, qty, cat_id, wt_id in sample_inventory:
+		for name, shortname, qty, cat_id, wt_id in inventory_items:
 			crud_inventory.create(
 				db,
 				obj_in=InventoryCreate(
