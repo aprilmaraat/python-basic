@@ -29,22 +29,23 @@ def get_user_id():
 
 def test_create_and_filter_transaction():
     user_id = get_user_id()
-    # Create transaction
+    # Create transaction with decimal quantity
     payload = {
         "title": "Filter Test",
         "description": "Testing filters",
         "owner_id": user_id,
         "transaction_type": "expense",
         "amount_per_unit": "321.50",
-        "quantity": 2,
+        "quantity": 2.5,
         "date": "2025-10-24"
     }
     r = client.post("/transactions", json=payload)
     assert r.status_code == 201, r.text
     created = r.json()
     assert created["amount_per_unit"] == "321.50"
-    assert created["quantity"] == 2
-    assert created["total_amount"] == str(Decimal("321.50") * 2)
+    assert Decimal(created["quantity"]) == Decimal("2.5")
+    expected_total = Decimal("321.50") * Decimal("2.5")
+    assert Decimal(created["total_amount"]) == expected_total
 
     # Filter by owner
     r_owner = client.get(f"/transactions/search?owner_id={user_id}")

@@ -29,7 +29,7 @@ class Transaction(Base):
 	transaction_type: Mapped[TransactionType] = mapped_column(default=TransactionType.expense, nullable=False)
 	# Renamed logically from 'amount' to 'amount_per_unit'; keep underlying column name 'amount' for backward compatibility.
 	amount_per_unit: Mapped[Decimal] = mapped_column('amount', Numeric(10, 2), default=Decimal('0.00'), nullable=False)
-	quantity: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
+	quantity: Mapped[Decimal] = mapped_column(Numeric(10, 3), default=Decimal('1.000'), nullable=False)
 	purchase_price: Mapped[Decimal] = mapped_column(Numeric(10, 2), default=Decimal('0.00'), nullable=False)
 	inventory_id: Mapped[Optional[int]] = mapped_column(ForeignKey("inventory.id", ondelete="SET NULL"), index=True, nullable=True)
 	date: Mapped[date] = mapped_column(Date, nullable=False, default=date.today)
@@ -39,7 +39,7 @@ class Transaction(Base):
 
 	@hybrid_property
 	def total_amount(self) -> Decimal:
-		return (self.amount_per_unit or Decimal('0.00')) * (self.quantity or 0)
+		return (self.amount_per_unit or Decimal('0.00')) * (self.quantity or Decimal('0.000'))
 
 	@total_amount.expression
 	def total_amount(cls):  # type: ignore[override]

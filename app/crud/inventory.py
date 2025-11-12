@@ -1,6 +1,7 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
 from sqlalchemy import select, and_, or_, func
+from decimal import Decimal
 from app.models.inventory import Inventory
 from app.schemas.inventory import InventoryCreate, InventoryUpdate
 
@@ -50,8 +51,8 @@ def search(
     q: Optional[str] = None,
     category_id: Optional[int] = None,
     weight_id: Optional[int] = None,
-    min_quantity: Optional[int] = None,
-    max_quantity: Optional[int] = None,
+    min_quantity: Optional[Decimal] = None,
+    max_quantity: Optional[Decimal] = None,
     skip: int = 0,
     limit: int = 100,
 ) -> List[Inventory]:

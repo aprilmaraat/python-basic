@@ -56,7 +56,7 @@ def enforce_columns(conn):
 		'amount': 'INTEGER',
 		'date': 'DATE',
 		'inventory_id': 'INTEGER',
-		'quantity': 'INTEGER DEFAULT 1 NOT NULL',
+		'quantity': 'NUMERIC(10, 3) DEFAULT 1.000 NOT NULL',
 	}
 	for name, sql_type in required.items():
 		if name not in columns:
@@ -131,18 +131,18 @@ def seed(db: Session):
 		
 		# Create actual inventory items (name, shortname, quantity, category_id, weight_id)
 		inventory_items = [
-			("LPG", "LPG-11", 0, lpg_cat.id, weight_11kg.id),
-			("Butane 225g", "BUT-225", 0, butane_cat.id, weight_225g.id),
-			("Coca-Cola 1L", "COKE-500", 0, cocacola_cat.id, weight_1L.id),
-			("Pepsi 1L", "PEPSI-355", 0, pepsi_cat.id, weight_1L.id),
-			("Beer", "BEER-355", 0, beer_cat.id, weight_355ml.id),
-			("Butane 170g", None, 0, butane_cat.id, weight_170g.id),
-			("Coca-Cola 8oz", None, 0, cocacola_cat.id, weight_235ml.id),
-			("Pepsi 8oz", None, 0, pepsi_cat.id, weight_235ml.id),
-			("Pepsi 12oz", None, 0, pepsi_cat.id, weight_355ml.id),
-			("Coca-Cola 190mL", None, 0, cocacola_cat.id, weight_190ml.id),
-			("Coca-Cola 290mL", None, 0, cocacola_cat.id, weight_290ml.id),
-			("Coca-Cola 1.5L", None, 0, cocacola_cat.id, weight_1_5L.id),
+			("LPG", "LPG-11", Decimal('0.000'), lpg_cat.id, weight_11kg.id),
+			("Butane 225g", "BUT-225", Decimal('0.000'), butane_cat.id, weight_225g.id),
+			("Coca-Cola 1L", "COKE-500", Decimal('0.000'), cocacola_cat.id, weight_1L.id),
+			("Pepsi 1L", "PEPSI-355", Decimal('0.000'), pepsi_cat.id, weight_1L.id),
+			("Beer", "BEER-355", Decimal('0.000'), beer_cat.id, weight_355ml.id),
+			("Butane 170g", None, Decimal('0.000'), butane_cat.id, weight_170g.id),
+			("Coca-Cola 8oz", None, Decimal('0.000'), cocacola_cat.id, weight_235ml.id),
+			("Pepsi 8oz", None, Decimal('0.000'), pepsi_cat.id, weight_235ml.id),
+			("Pepsi 12oz", None, Decimal('0.000'), pepsi_cat.id, weight_355ml.id),
+			("Coca-Cola 190mL", None, Decimal('0.000'), cocacola_cat.id, weight_190ml.id),
+			("Coca-Cola 290mL", None, Decimal('0.000'), cocacola_cat.id, weight_290ml.id),
+			("Coca-Cola 1.5L", None, Decimal('0.000'), cocacola_cat.id, weight_1_5L.id),
 		]
 		
 		for name, shortname, qty, cat_id, wt_id in inventory_items:

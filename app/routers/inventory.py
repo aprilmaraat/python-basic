@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Optional
+from decimal import Decimal
 from app.db.session import get_db
 from app.crud import inventory as crud_inventory
 from app.crud import category as crud_category
@@ -16,8 +17,8 @@ def search_inventory(
     q: Optional[str] = Query(default=None, description="Search in name or shortname"),
     category_id: Optional[int] = Query(default=None, description="Filter by category ID"),
     weight_id: Optional[int] = Query(default=None, description="Filter by weight ID"),
-    min_quantity: Optional[int] = Query(default=None, ge=0, description="Minimum quantity"),
-    max_quantity: Optional[int] = Query(default=None, ge=0, description="Maximum quantity"),
+    min_quantity: Optional[Decimal] = Query(default=None, ge=0, description="Minimum quantity"),
+    max_quantity: Optional[Decimal] = Query(default=None, ge=0, description="Maximum quantity"),
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1),
 ):

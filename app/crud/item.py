@@ -23,7 +23,7 @@ def create(db: Session, obj_in: TransactionCreate) -> Transaction:
 		owner_id=obj_in.owner_id,
 		transaction_type=obj_in.transaction_type,
 		amount_per_unit=Decimal(obj_in.amount_per_unit),
-		quantity=obj_in.quantity,
+		quantity=Decimal(obj_in.quantity),
 		purchase_price=Decimal(obj_in.purchase_price),
 		date=obj_in.date,
 		inventory_id=obj_in.inventory_id,
@@ -37,7 +37,7 @@ def create(db: Session, obj_in: TransactionCreate) -> Transaction:
 def update(db: Session, db_obj: Transaction, obj_in: TransactionUpdate) -> Transaction:
 	data = obj_in.model_dump(exclude_unset=True)
 	for field, value in data.items():
-		if field in ("amount_per_unit", "purchase_price") and value is not None:
+		if field in ("amount_per_unit", "purchase_price", "quantity") and value is not None:
 			value = Decimal(value)
 		setattr(db_obj, field, value)
 	db.add(db_obj)

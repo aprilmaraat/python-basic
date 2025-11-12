@@ -14,14 +14,20 @@ class TransactionBase(BaseModel):
 	description: Optional[str] = None
 	transaction_type: TransactionType = TransactionType.expense
 	amount_per_unit: Decimal = Decimal('0.00')
-	quantity: int = 1
+	quantity: Decimal = Decimal('1.000')
 	purchase_price: Decimal = Decimal('0.00')
 	date: dt_date = Field(default_factory=dt_date.today)
 
 	@field_validator("amount_per_unit", "purchase_price", mode="before")
-	def to_decimal(cls, v):  # type: ignore[override]
+	def to_decimal_money(cls, v):  # type: ignore[override]
 		if isinstance(v, (int, float, str)):
 			return Decimal(str(v)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+		return v
+	
+	@field_validator("quantity", mode="before")
+	def to_decimal_quantity(cls, v):  # type: ignore[override]
+		if isinstance(v, (int, float, str)):
+			return Decimal(str(v)).quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)
 		return v
 
 
@@ -35,17 +41,25 @@ class TransactionUpdate(BaseModel):
 	description: Optional[str] = None
 	transaction_type: Optional[TransactionType] = None
 	amount_per_unit: Optional[Decimal] = None
-	quantity: Optional[int] = None
+	quantity: Optional[Decimal] = None
 	purchase_price: Optional[Decimal] = None
 	date: Optional[dt_date] = None
 	inventory_id: Optional[int] = None
 
 	@field_validator("amount_per_unit", "purchase_price", mode="before")
-	def to_decimal(cls, v):  # type: ignore[override]
+	def to_decimal_money(cls, v):  # type: ignore[override]
 		if v is None:
 			return v
 		if isinstance(v, (int, float, str)):
 			return Decimal(str(v)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+		return v
+	
+	@field_validator("quantity", mode="before")
+	def to_decimal_quantity(cls, v):  # type: ignore[override]
+		if v is None:
+			return v
+		if isinstance(v, (int, float, str)):
+			return Decimal(str(v)).quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)
 		return v
 
 
@@ -56,7 +70,7 @@ class TransactionRead(BaseModel):
 	owner_id: int
 	transaction_type: TransactionType
 	amount_per_unit: Decimal
-	quantity: int
+	quantity: Decimal
 	purchase_price: Decimal
 	total_amount: Decimal
 	date: dt_date
@@ -72,7 +86,7 @@ class TransactionReadSimple(BaseModel):
 	owner_id: int
 	transaction_type: TransactionType
 	amount_per_unit: Decimal
-	quantity: int
+	quantity: Decimal
 	purchase_price: Decimal
 	total_amount: Decimal
 	date: dt_date
@@ -89,7 +103,7 @@ class TransactionReadDetailed(BaseModel):
 	owner_id: int
 	transaction_type: TransactionType
 	amount_per_unit: Decimal
-	quantity: int
+	quantity: Decimal
 	purchase_price: Decimal
 	total_amount: Decimal
 	date: dt_date

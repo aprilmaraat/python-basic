@@ -1,0 +1,174 @@
+{
+  "timestamp": "2025-11-12T10:42:29.862512",
+  "users": [
+    {
+      "id": 1,
+      "email": "dawnblaze.wholesale.distributions@gmail.com",
+      "full_name": "DB Wholesale Trading",
+      "is_active": true
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "LPG"
+    },
+    {
+      "id": 2,
+      "name": "Butane"
+    },
+    {
+      "id": 3,
+      "name": "Coca-cola Soft Drinks"
+    },
+    {
+      "id": 4,
+      "name": "Pepsi Soft Drinks"
+    },
+    {
+      "id": 5,
+      "name": "Beer"
+    }
+  ],
+  "weights": [
+    {
+      "id": 1,
+      "name": "11kg"
+    },
+    {
+      "id": 2,
+      "name": "225g"
+    },
+    {
+      "id": 3,
+      "name": "170g"
+    },
+    {
+      "id": 4,
+      "name": "500mL"
+    },
+    {
+      "id": 5,
+      "name": "355ml (12oz)"
+    },
+    {
+      "id": 6,
+      "name": "235ml (8oz)"
+    },
+    {
+      "id": 7,
+      "name": "1L"
+    },
+    {
+      "id": 8,
+      "name": "190mL"
+    },
+    {
+      "id": 9,
+      "name": "290mL"
+    },
+    {
+      "id": 10,
+      "name": "1.5L"
+    }
+  ],
+  "inventory": [
+    {
+      "id": 1,
+      "name": "LPG",
+      "shortname": "LPG-11",
+      "quantity": "1.000",
+      "category_id": 1,
+      "weight_id": 1
+    },
+    {
+      "id": 2,
+      "name": "Butane 225g",
+      "shortname": "BUT-225",
+      "quantity": "240.000",
+      "category_id": 2,
+      "weight_id": 2
+    },
+    {
+      "id": 3,
+      "name": "Coca-Cola 1L",
+      "shortname": "COKE-500",
+      "quantity": "0.000",
+      "category_id": 3,
+      "weight_id": 7
+    },
+    {
+      "id": 4,
+      "name": "Pepsi 1L",
+      "shortname": "PEPSI-355",
+      "quantity": "0.000",
+      "category_id": 4,
+      "weight_id": 7
+    },
+    {
+      "id": 5,
+      "name": "Beer",
+      "shortname": "BEER-355",
+      "quantity": "0.000",
+      "category_id": 5,
+      "weight_id": 5
+    },
+    {
+      "id": 6,
+      "name": "Butane 170g",
+      "shortname": null,
+      "quantity": "0.000",
+      "category_id": 2,
+      "weight_id": 3
+    },
+    {
+      "id": 7,
+      "name": "Coca-Cola 8oz",
+      "shortname": null,
+      "quantity": "0.000",
+      "category_id": 3,
+      "weight_id": 6
+    },
+    {
+      "id": 8,
+      "name": "Pepsi 8oz",
+      "shortname": null,
+      "quantity": "0.000",
+      "category_id": 4,
+      "weight_id": 6
+    },
+    {
+      "id": 9,
+      "name": "Pepsi 12oz",
+      "shortname": null,
+      "quantity": "0.000",
+      "category_id": 4,
+      "weight_id": 5
+    },
+    {
+      "id": 10,
+      "name": "Coca-Cola 190mL",
+      "shortname": null,
+      "quantity": "0.000",
+      "category_id": 3,
+      "weight_id": 8
+    },
+    {
+      "id": 11,
+      "name": "Coca-Cola 290mL",
+      "shortname": null,
+      "quantity": "0.000",
+      "category_id": 3,
+      "weight_id": 9
+    },
+    {
+      "id": 12,
+      "name": "Coca-Cola 1.5L",
+      "shortname": null,
+      "quantity": "0.000",
+      "category_id": 3,
+      "weight_id": 10
+    }
+  ],
+  "transactions": []
+}
