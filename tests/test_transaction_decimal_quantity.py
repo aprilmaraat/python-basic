@@ -31,7 +31,7 @@ def test_transaction_decimal_quantity():
     """Test that transactions support decimal quantities."""
     user_id = get_user_id()
     
-    # Test creating transaction with decimal quantity
+    # Test creating transaction with decimal quantity and datetime
     payload = {
         "title": "Decimal Quantity Test",
         "description": "Testing decimal quantity support",
@@ -39,7 +39,7 @@ def test_transaction_decimal_quantity():
         "transaction_type": "expense",
         "amount_per_unit": "100.00",
         "quantity": 2.5,
-        "date": "2025-11-07"
+        "date": "2025-11-07T10:30:00"
     }
     r = client.post("/transactions", json=payload)
     assert r.status_code == 201, r.text
@@ -80,7 +80,7 @@ def test_transaction_integer_quantity_still_works():
         "transaction_type": "earning",
         "amount_per_unit": "50.00",
         "quantity": 10,  # Integer
-        "date": "2025-11-07"
+        "date": "2025-11-07T09:00:00"
     }
     r = client.post("/transactions", json=payload)
     assert r.status_code == 201, r.text
@@ -110,7 +110,7 @@ def test_transaction_fractional_quantities():
             "transaction_type": "expense",
             "amount_per_unit": "10.00",
             "quantity": quantity_input,
-            "date": "2025-11-07"
+            "date": "2025-11-07T15:45:00"
         }
         r = client.post("/transactions", json=payload)
         assert r.status_code == 201, r.text
@@ -134,7 +134,7 @@ def test_transaction_quantity_precision():
         "transaction_type": "expense",
         "amount_per_unit": "7.50",
         "quantity": 2.125,  # Exact 3 decimal places
-        "date": "2025-11-07"
+        "date": "2025-11-07T18:20:00"
     }
     r = client.post("/transactions", json=payload)
     assert r.status_code == 201, r.text

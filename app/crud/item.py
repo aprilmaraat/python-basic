@@ -1,5 +1,5 @@
 from typing import List, Optional
-from datetime import date
+from datetime import datetime
 from sqlalchemy.orm import Session
 from sqlalchemy import select, and_, or_, func
 from decimal import Decimal
@@ -58,8 +58,8 @@ def search(
 	owner_id: Optional[int] = None,
 	q: Optional[str] = None,
 	transaction_type: Optional[TransactionType] = None,
-	date_from: Optional[date] = None,
-	date_to: Optional[date] = None,
+	date_from: Optional[datetime] = None,
+	date_to: Optional[datetime] = None,
 	skip: int = 0,
 	limit: int = 100,
 

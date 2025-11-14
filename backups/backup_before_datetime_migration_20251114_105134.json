@@ -1,0 +1,675 @@
+{
+  "timestamp": "2025-11-14T10:51:34.207619",
+  "users": [
+    {
+      "id": 1,
+      "email": "dawnblaze.wholesale.distributions@gmail.com",
+      "full_name": "DB Wholesale Trading",
+      "is_active": true
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "LPG"
+    },
+    {
+      "id": 2,
+      "name": "Butane"
+    },
+    {
+      "id": 3,
+      "name": "Coca-cola Soft Drinks"
+    },
+    {
+      "id": 4,
+      "name": "Pepsi Soft Drinks"
+    },
+    {
+      "id": 5,
+      "name": "Beer"
+    },
+    {
+      "id": 6,
+      "name": "Flavored Beer"
+    }
+  ],
+  "weights": [
+    {
+      "id": 1,
+      "name": "11kg"
+    },
+    {
+      "id": 2,
+      "name": "225g"
+    },
+    {
+      "id": 3,
+      "name": "170g"
+    },
+    {
+      "id": 4,
+      "name": "500mL"
+    },
+    {
+      "id": 5,
+      "name": "355ml (12oz)"
+    },
+    {
+      "id": 6,
+      "name": "235ml (8oz)"
+    },
+    {
+      "id": 7,
+      "name": "1L"
+    },
+    {
+      "id": 8,
+      "name": "190mL"
+    },
+    {
+      "id": 9,
+      "name": "290mL"
+    },
+    {
+      "id": 10,
+      "name": "1.5L"
+    }
+  ],
+  "inventory": [
+    {
+      "id": 1,
+      "name": "LPG",
+      "shortname": "LPG-11",
+      "quantity": "1.000",
+      "category_id": 1,
+      "weight_id": 1
+    },
+    {
+      "id": 2,
+      "name": "Butane 225g",
+      "shortname": "BUT-225",
+      "quantity": "210.000",
+      "category_id": 2,
+      "weight_id": 2
+    },
+    {
+      "id": 3,
+      "name": "Coca-Cola 1L",
+      "shortname": "COKE-500",
+      "quantity": "22.500",
+      "category_id": 3,
+      "weight_id": 7
+    },
+    {
+      "id": 4,
+      "name": "Pepsi 1L",
+      "shortname": "PEPSI-355",
+      "quantity": "1.000",
+      "category_id": 4,
+      "weight_id": 7
+    },
+    {
+      "id": 5,
+      "name": "Beer 1L",
+      "shortname": "BEER-355",
+      "quantity": "15.000",
+      "category_id": 5,
+      "weight_id": 7
+    },
+    {
+      "id": 6,
+      "name": "Butane 170g",
+      "shortname": null,
+      "quantity": "56.000",
+      "category_id": 2,
+      "weight_id": 3
+    },
+    {
+      "id": 7,
+      "name": "Coca-Cola 8oz",
+      "shortname": null,
+      "quantity": "8.500",
+      "category_id": 3,
+      "weight_id": 6
+    },
+    {
+      "id": 8,
+      "name": "Pepsi 8oz",
+      "shortname": null,
+      "quantity": "7.000",
+      "category_id": 4,
+      "weight_id": 6
+    },
+    {
+      "id": 9,
+      "name": "Pepsi 12oz",
+      "shortname": null,
+      "quantity": "0.000",
+      "category_id": 4,
+      "weight_id": 5
+    },
+    {
+      "id": 10,
+      "name": "Coca-Cola 190mL",
+      "shortname": null,
+      "quantity": "8.000",
+      "category_id": 3,
+      "weight_id": 8
+    },
+    {
+      "id": 11,
+      "name": "Coca-Cola 290mL",
+      "shortname": null,
+      "quantity": "15.000",
+      "category_id": 3,
+      "weight_id": 9
+    },
+    {
+      "id": 12,
+      "name": "Coca-Cola 1.5L",
+      "shortname": null,
+      "quantity": "1.000",
+      "category_id": 3,
+      "weight_id": 10
+    },
+    {
+      "id": 13,
+      "name": "Flavored Beer 8oz",
+      "shortname": null,
+      "quantity": "1.000",
+      "category_id": 6,
+      "weight_id": 6
+    },
+    {
+      "id": 14,
+      "name": "Beer 500mL",
+      "shortname": null,
+      "quantity": "11.000",
+      "category_id": 5,
+      "weight_id": 4
+    }
+  ],
+  "transactions": [
+    {
+      "id": 1,
+      "title": "Customer Purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "28.00",
+      "quantity": "1.000",
+      "purchase_price": "23.26",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 2
+    },
+    {
+      "id": 2,
+      "title": "Customer Purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "650.00",
+      "quantity": "3.000",
+      "purchase_price": "640.00",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 5
+    },
+    {
+      "id": 3,
+      "title": "Customer PUrchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "400.00",
+      "quantity": "1.000",
+      "purchase_price": "386.00",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 3
+    },
+    {
+      "id": 4,
+      "title": "Customer Purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "194.00",
+      "quantity": "2.000",
+      "purchase_price": "191.00",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 7
+    },
+    {
+      "id": 5,
+      "title": "Customer Purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "75.00",
+      "quantity": "2.000",
+      "purchase_price": "60.00",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 2
+    },
+    {
+      "id": 6,
+      "title": "Customer Purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "28.00",
+      "quantity": "2.000",
+      "purchase_price": "23.26",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 2
+    },
+    {
+      "id": 7,
+      "title": "Customer Purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "28.00",
+      "quantity": "10.000",
+      "purchase_price": "23.26",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 2
+    },
+    {
+      "id": 8,
+      "title": "cuatomer purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "20.00",
+      "quantity": "24.000",
+      "purchase_price": "17.99",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 6
+    },
+    {
+      "id": 9,
+      "title": "customer purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "26.00",
+      "quantity": "21.000",
+      "purchase_price": "23.26",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 2
+    },
+    {
+      "id": 10,
+      "title": "customer purs",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "194.00",
+      "quantity": "1.000",
+      "purchase_price": "181.00",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 7
+    },
+    {
+      "id": 11,
+      "title": "customer purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "200.00",
+      "quantity": "0.500",
+      "purchase_price": "386.00",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 3
+    },
+    {
+      "id": 12,
+      "title": "Customer Purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "400.00",
+      "quantity": "1.000",
+      "purchase_price": "386.00",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 3
+    },
+    {
+      "id": 13,
+      "title": "Customer Purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "26.00",
+      "quantity": "18.000",
+      "purchase_price": "23.26",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 2
+    },
+    {
+      "id": 14,
+      "title": "Customer Purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "28.00",
+      "quantity": "1.000",
+      "purchase_price": "23.26",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 2
+    },
+    {
+      "id": 15,
+      "title": "Customer Purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "28.00",
+      "quantity": "3.000",
+      "purchase_price": "23.26",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 2
+    },
+    {
+      "id": 16,
+      "title": "Customer Purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "28.00",
+      "quantity": "4.000",
+      "purchase_price": "23.26",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 2
+    },
+    {
+      "id": 17,
+      "title": "Customer Purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "734.00",
+      "quantity": "2.000",
+      "purchase_price": "724.00",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 2
+    },
+    {
+      "id": 18,
+      "title": "Customer Purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "27.00",
+      "quantity": "6.000",
+      "purchase_price": "23.26",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 2
+    },
+    {
+      "id": 19,
+      "title": "Customer Purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "28.00",
+      "quantity": "3.000",
+      "purchase_price": "23.26",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 2
+    },
+    {
+      "id": 20,
+      "title": "Customer Purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "28.00",
+      "quantity": "5.000",
+      "purchase_price": "23.26",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 2
+    },
+    {
+      "id": 21,
+      "title": "Customer Purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "26.00",
+      "quantity": "11.000",
+      "purchase_price": "23.26",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 2
+    },
+    {
+      "id": 22,
+      "title": "Customer Purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "26.00",
+      "quantity": "10.000",
+      "purchase_price": "23.26",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 2
+    },
+    {
+      "id": 23,
+      "title": "Purchase from Supplier - Valladolid",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "expense",
+      "amount_per_unit": "854.00",
+      "quantity": "1.000",
+      "purchase_price": "854.00",
+      "date": "2025-11-12T00:00:00",
+      "inventory_id": 7
+    },
+    {
+      "id": 24,
+      "title": "Customer Purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "28.00",
+      "quantity": "1.000",
+      "purchase_price": "23.26",
+      "date": "2025-11-13T00:00:00",
+      "inventory_id": 7
+    },
+    {
+      "id": 25,
+      "title": "Customer Purchase",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "734.00",
+      "quantity": "1.000",
+      "purchase_price": "720.00",
+      "date": "2025-11-13T00:00:00",
+      "inventory_id": 12
+    },
+    {
+      "id": 26,
+      "title": "Customer Purchase: Coke 290mL (Mismo))",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "206.00",
+      "quantity": "1.000",
+      "purchase_price": "196.00",
+      "date": "2025-11-13T00:00:00",
+      "inventory_id": 11
+    },
+    {
+      "id": 27,
+      "title": "Customer Purchase: Coke 190mL (Swakto)",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "142.00",
+      "quantity": "2.000",
+      "purchase_price": "132.00",
+      "date": "2025-11-13T00:00:00",
+      "inventory_id": 10
+    },
+    {
+      "id": 28,
+      "title": "Customer Purchase: Mountain Dew 8oz",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "190.00",
+      "quantity": "1.000",
+      "purchase_price": "181.00",
+      "date": "2025-11-13T00:00:00",
+      "inventory_id": 8
+    },
+    {
+      "id": 29,
+      "title": "Customer Purchase: Coke 1L",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "400.00",
+      "quantity": "1.000",
+      "purchase_price": "386.00",
+      "date": "2025-11-13T00:00:00",
+      "inventory_id": 3
+    },
+    {
+      "id": 30,
+      "title": "Customer Purchase: Grande",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "620.00",
+      "quantity": "1.000",
+      "purchase_price": "610.00",
+      "date": "2025-11-13T00:00:00",
+      "inventory_id": 5
+    },
+    {
+      "id": 31,
+      "title": "Customer Purchase: Butane 225g",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "28.00",
+      "quantity": "1.000",
+      "purchase_price": "23.26",
+      "date": "2025-11-13T00:00:00",
+      "inventory_id": 2
+    },
+    {
+      "id": 32,
+      "title": "Customer Purchase: Butane 225g",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "28.00",
+      "quantity": "1.000",
+      "purchase_price": "23.26",
+      "date": "2025-11-13T00:00:00",
+      "inventory_id": 2
+    },
+    {
+      "id": 33,
+      "title": "Purchase from Supplier - Denard",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "expense",
+      "amount_per_unit": "740.00",
+      "quantity": "2.000",
+      "purchase_price": "740.00",
+      "date": "2025-11-13T00:00:00",
+      "inventory_id": 12
+    },
+    {
+      "id": 34,
+      "title": "Customer Purchase: Coke 190mL (Swakto)",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "142.00",
+      "quantity": "3.000",
+      "purchase_price": "132.00",
+      "date": "2025-11-13T00:00:00",
+      "inventory_id": 10
+    },
+    {
+      "id": 35,
+      "title": "Customer Purchase: Coke 8oz",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "194.00",
+      "quantity": "3.000",
+      "purchase_price": "191.00",
+      "date": "2025-11-13T00:00:00",
+      "inventory_id": 7
+    },
+    {
+      "id": 36,
+      "title": "Customer Puchase: Coke 1.5L",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "748.00",
+      "quantity": "2.000",
+      "purchase_price": "740.00",
+      "date": "2025-11-13T00:00:00",
+      "inventory_id": 12
+    },
+    {
+      "id": 37,
+      "title": "Purchase from Supplier: Valladolid",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "expense",
+      "amount_per_unit": "750.00",
+      "quantity": "1.000",
+      "purchase_price": "750.00",
+      "date": "2025-11-13T00:00:00",
+      "inventory_id": 12
+    },
+    {
+      "id": 38,
+      "title": "Customer Purchase: Coke 1.5L",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "748.00",
+      "quantity": "1.000",
+      "purchase_price": "750.00",
+      "date": "2025-11-13T00:00:00",
+      "inventory_id": 12
+    },
+    {
+      "id": 39,
+      "title": "Customer Purchase: Mountain Dew 12oz",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "290.00",
+      "quantity": "1.000",
+      "purchase_price": "280.00",
+      "date": "2025-11-13T00:00:00",
+      "inventory_id": 9
+    },
+    {
+      "id": 40,
+      "title": "Customer Purchase: Mountain Dew 8oz",
+      "description": null,
+      "owner_id": 1,
+      "transaction_type": "earning",
+      "amount_per_unit": "190.00",
+      "quantity": "1.000",
+      "purchase_price": "181.00",
+      "date": "2025-11-14T00:00:00",
+      "inventory_id": 8
+    }
+  ]
+}

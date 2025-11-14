@@ -29,7 +29,7 @@ def get_user_id():
 
 def test_create_and_filter_transaction():
     user_id = get_user_id()
-    # Create transaction with decimal quantity
+    # Create transaction with decimal quantity and datetime
     payload = {
         "title": "Filter Test",
         "description": "Testing filters",
@@ -37,7 +37,7 @@ def test_create_and_filter_transaction():
         "transaction_type": "expense",
         "amount_per_unit": "321.50",
         "quantity": 2.5,
-        "date": "2025-10-24"
+        "date": "2025-10-24T14:30:00"
     }
     r = client.post("/transactions", json=payload)
     assert r.status_code == 201, r.text

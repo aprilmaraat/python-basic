@@ -1,9 +1,9 @@
 from __future__ import annotations
-from datetime import date
+from datetime import datetime
 from typing import Optional, TYPE_CHECKING
 from enum import Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String, Integer, ForeignKey, Date, Numeric
+from sqlalchemy import String, Integer, ForeignKey, DateTime, Numeric
 from sqlalchemy.ext.hybrid import hybrid_property
 from decimal import Decimal
 from app.db.session import Base
@@ -32,14 +32,15 @@ class Transaction(Base):
 	quantity: Mapped[Decimal] = mapped_column(Numeric(10, 3), default=Decimal('1.000'), nullable=False)
 	purchase_price: Mapped[Decimal] = mapped_column(Numeric(10, 2), default=Decimal('0.00'), nullable=False)
 	inventory_id: Mapped[Optional[int]] = mapped_column(ForeignKey("inventory.id", ondelete="SET NULL"), index=True, nullable=True)
-	date: Mapped[date] = mapped_column(Date, nullable=False, default=date.today)
+	date: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now)
 
 	owner: Mapped["User"] = relationship("User", back_populates="transactions")
 	inventory: Mapped[Optional["Inventory"]] = relationship("Inventory", back_populates="transactions")
 
 	@hybrid_property
 	def total_amount(self) -> Decimal:
-		return (self.amount_per_unit or Decimal('0.00')) * (self.quantity or Decimal('0.000'))
+		result = (self.amount_per_unit or Decimal('0.00')) * (self.quantity or Decimal('0.000'))
+		return result.quantize(Decimal('0.01'))
 
 	@total_amount.expression
 	def total_amount(cls):  # type: ignore[override]

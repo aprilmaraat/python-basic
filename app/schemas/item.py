@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional, TYPE_CHECKING
-from datetime import date as dt_date
+from datetime import datetime
 from decimal import Decimal, ROUND_HALF_UP
 from app.models.transaction import TransactionType
 
@@ -16,7 +16,7 @@ class TransactionBase(BaseModel):
 	amount_per_unit: Decimal = Decimal('0.00')
 	quantity: Decimal = Decimal('1.000')
 	purchase_price: Decimal = Decimal('0.00')
-	date: dt_date = Field(default_factory=dt_date.today)
+	date: datetime = Field(default_factory=datetime.now)
 
 	@field_validator("amount_per_unit", "purchase_price", mode="before")
 	def to_decimal_money(cls, v):  # type: ignore[override]
@@ -43,7 +43,7 @@ class TransactionUpdate(BaseModel):
 	amount_per_unit: Optional[Decimal] = None
 	quantity: Optional[Decimal] = None
 	purchase_price: Optional[Decimal] = None
-	date: Optional[dt_date] = None
+	date: Optional[datetime] = None
 	inventory_id: Optional[int] = None
 
 	@field_validator("amount_per_unit", "purchase_price", mode="before")
@@ -73,7 +73,7 @@ class TransactionRead(BaseModel):
 	quantity: Decimal
 	purchase_price: Decimal
 	total_amount: Decimal
-	date: dt_date
+	date: datetime
 	inventory_id: Optional[int]
 
 	model_config = {"from_attributes": True}
@@ -89,7 +89,7 @@ class TransactionReadSimple(BaseModel):
 	quantity: Decimal
 	purchase_price: Decimal
 	total_amount: Decimal
-	date: dt_date
+	date: datetime
 	inventory_id: Optional[int]
 
 	model_config = {"from_attributes": True}
@@ -106,7 +106,7 @@ class TransactionReadDetailed(BaseModel):
 	quantity: Decimal
 	purchase_price: Decimal
 	total_amount: Decimal
-	date: dt_date
+	date: datetime
 	inventory_id: Optional[int]
 	owner: "UserReadSimple"
 	inventory: Optional["InventoryReadSimple"] = None

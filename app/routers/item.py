@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from datetime import date as dt_date
+from datetime import datetime
 from typing import Optional
 from app.db.session import get_db
 from app.crud import item as crud_transaction
@@ -25,8 +25,8 @@ def search_transactions(
 	owner_id: Optional[int] = Query(default=None),
 	q: Optional[str] = Query(default=None),
 	transaction_type: Optional[TransactionType] = Query(default=None),
-	date_from: Optional[dt_date] = Query(default=None),
-	date_to: Optional[dt_date] = Query(default=None),
+	date_from: Optional[datetime] = Query(default=None),
+	date_to: Optional[datetime] = Query(default=None),
 	skip: int = Query(0, ge=0),
 	limit: int = Query(100, ge=1),
 ):

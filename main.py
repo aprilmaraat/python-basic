@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import inspect, text
 from sqlalchemy.orm import Session
-from datetime import date
+from datetime import datetime
 from decimal import Decimal
 
 from app.core.config import settings
@@ -54,7 +54,7 @@ def enforce_columns(conn):
 	required = {
 		'transaction_type': 'TEXT',
 		'amount': 'INTEGER',
-		'date': 'DATE',
+		'date': 'DATETIME',
 		'inventory_id': 'INTEGER',
 		'quantity': 'NUMERIC(10, 3) DEFAULT 1.000 NOT NULL',
 	}

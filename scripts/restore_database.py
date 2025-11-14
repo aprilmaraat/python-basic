@@ -96,6 +96,15 @@ def restore_database(backup_file: str):
             elif isinstance(quantity, str):
                 quantity = Decimal(quantity)
             
+            # Parse datetime, handling both date-only and datetime formats
+            date_value = trans_data["date"]
+            if 'T' in date_value or ' ' in date_value:
+                # Already a datetime string
+                parsed_date = datetime.fromisoformat(date_value)
+            else:
+                # Date-only string, convert to datetime at midnight
+                parsed_date = datetime.fromisoformat(date_value + "T00:00:00")
+            
             transaction = Transaction(
                 id=trans_data["id"],
                 title=trans_data["title"],
@@ -105,7 +114,7 @@ def restore_database(backup_file: str):
                 amount_per_unit=Decimal(trans_data["amount_per_unit"]),
                 quantity=quantity,
                 purchase_price=Decimal(trans_data["purchase_price"]),
-                date=datetime.fromisoformat(trans_data["date"]).date(),
+                date=parsed_date,
                 inventory_id=trans_data.get("inventory_id")
             )
             db.add(transaction)
