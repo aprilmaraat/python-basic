@@ -3,6 +3,7 @@ from typing import Optional, TYPE_CHECKING
 from datetime import datetime
 from decimal import Decimal, ROUND_HALF_UP
 from app.models.transaction import TransactionType
+from app.core.timezone import now_philippines
 
 if TYPE_CHECKING:
 	from app.schemas.user import UserReadSimple
@@ -34,7 +35,7 @@ class TransactionBase(BaseModel):
 class TransactionCreate(TransactionBase):
 	owner_id: int
 	inventory_id: Optional[int] = None
-	date: datetime = Field(default_factory=datetime.now)  # Default only for creation
+	date: datetime = Field(default_factory=now_philippines)  # Default to Philippines time (GMT+8)
 
 
 class TransactionUpdate(BaseModel):

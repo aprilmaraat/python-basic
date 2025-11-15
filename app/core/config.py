@@ -8,6 +8,7 @@ class Settings(BaseSettings):
 	debug: bool = True
 	database_url: str = "sqlite:///fastapi.db"
 	cors_allow_origins: List[str] = ["http://localhost:3000", "*"]
+	timezone: str = "Asia/Manila"  # Philippines Time (GMT+8)
 
 	@field_validator("cors_allow_origins", mode="before")
 	def ensure_list(cls, v):  # type: ignore[override]
