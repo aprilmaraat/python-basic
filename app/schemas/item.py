@@ -16,7 +16,7 @@ class TransactionBase(BaseModel):
 	amount_per_unit: Decimal = Decimal('0.00')
 	quantity: Decimal = Decimal('1.000')
 	purchase_price: Decimal = Decimal('0.00')
-	date: datetime = Field(default_factory=datetime.now)
+	date: datetime  # No default - must be explicitly provided
 
 	@field_validator("amount_per_unit", "purchase_price", mode="before")
 	def to_decimal_money(cls, v):  # type: ignore[override]
@@ -34,6 +34,7 @@ class TransactionBase(BaseModel):
 class TransactionCreate(TransactionBase):
 	owner_id: int
 	inventory_id: Optional[int] = None
+	date: datetime = Field(default_factory=datetime.now)  # Default only for creation
 
 
 class TransactionUpdate(BaseModel):

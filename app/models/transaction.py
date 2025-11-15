@@ -32,7 +32,7 @@ class Transaction(Base):
 	quantity: Mapped[Decimal] = mapped_column(Numeric(10, 3), default=Decimal('1.000'), nullable=False)
 	purchase_price: Mapped[Decimal] = mapped_column(Numeric(10, 2), default=Decimal('0.00'), nullable=False)
 	inventory_id: Mapped[Optional[int]] = mapped_column(ForeignKey("inventory.id", ondelete="SET NULL"), index=True, nullable=True)
-	date: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now)
+	date: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=lambda: datetime.now())
 
 	owner: Mapped["User"] = relationship("User", back_populates="transactions")
 	inventory: Mapped[Optional["Inventory"]] = relationship("Inventory", back_populates="transactions")
