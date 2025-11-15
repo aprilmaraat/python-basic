@@ -60,6 +60,7 @@ def search(
 	transaction_type: Optional[TransactionType] = None,
 	date_from: Optional[datetime] = None,
 	date_to: Optional[datetime] = None,
+	inventory_id: Optional[int] = None,
 	skip: int = 0,
 	limit: int = 100,
 
@@ -73,6 +74,8 @@ def search(
 		filters.append(Transaction.date >= date_from)
 	if date_to is not None:
 		filters.append(Transaction.date <= date_to)
+	if inventory_id is not None:
+		filters.append(Transaction.inventory_id == inventory_id)
 	if q:
 		like_exp = f"%{q.lower()}%"
 		filters.append(

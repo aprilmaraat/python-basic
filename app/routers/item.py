@@ -27,6 +27,7 @@ def search_transactions(
 	transaction_type: Optional[TransactionType] = Query(default=None),
 	date_from: Optional[datetime] = Query(default=None),
 	date_to: Optional[datetime] = Query(default=None),
+	inventory_id: Optional[int] = Query(default=None),
 	skip: int = Query(0, ge=0),
 	limit: int = Query(100, ge=1),
 ):
@@ -37,6 +38,7 @@ def search_transactions(
 		transaction_type=transaction_type,
 		date_from=date_from,
 		date_to=date_to,
+		inventory_id=inventory_id,
 		skip=skip,
 		limit=limit,
 	)
