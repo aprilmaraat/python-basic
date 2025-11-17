@@ -37,6 +37,22 @@ class TransactionCreate(TransactionBase):
 	inventory_id: Optional[int] = None
 	date: datetime = Field(default_factory=now_philippines)  # Default to Philippines time (GMT+8)
 
+	@field_validator("date", mode="before")
+	def ensure_naive_datetime(cls, v):  # type: ignore[override]
+		"""Ensure date is a naive datetime (no timezone info) representing local time"""
+		if v is None:
+			return now_philippines()
+		if isinstance(v, str):
+			# Parse string to datetime - will be naive
+			return datetime.fromisoformat(v.replace('Z', '+00:00')).replace(tzinfo=None)
+		if isinstance(v, datetime):
+			# If timezone-aware, convert to local time and remove tzinfo
+			if v.tzinfo is not None:
+				# Remove timezone info to store as naive datetime
+				return v.replace(tzinfo=None)
+			return v
+		return v
+
 
 class TransactionUpdate(BaseModel):
 	title: Optional[str] = None
@@ -62,6 +78,22 @@ class TransactionUpdate(BaseModel):
 			return v
 		if isinstance(v, (int, float, str)):
 			return Decimal(str(v)).quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)
+		return v
+
+	@field_validator("date", mode="before")
+	def ensure_naive_datetime_update(cls, v):  # type: ignore[override]
+		"""Ensure date is a naive datetime (no timezone info) representing local time"""
+		if v is None:
+			return None
+		if isinstance(v, str):
+			# Parse string to datetime - will be naive
+			return datetime.fromisoformat(v.replace('Z', '+00:00')).replace(tzinfo=None)
+		if isinstance(v, datetime):
+			# If timezone-aware, convert to local time and remove tzinfo
+			if v.tzinfo is not None:
+				# Remove timezone info to store as naive datetime
+				return v.replace(tzinfo=None)
+			return v
 		return v
 
 
